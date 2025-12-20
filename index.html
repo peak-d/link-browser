@@ -143,6 +143,7 @@ button:hover {
 .note {
   font-size: 12px;
   opacity: 0.75;
+  text-align: center;
 }
 
 /* Theme toggle */
@@ -197,9 +198,20 @@ button:hover {
 
   <div class="quick-links">
     <h3>Quick Links</h3>
+
     <a onclick="openL('https://login.live.com/?scrlcbp=.')">Microsoft Login</a>
-    <a onclick="openL('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Xbox Fortnite</a>
-    <a onclick="openL('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">now.gg</a>
+    <a onclick="openL('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Math Battle Pass</a>
+    <a onclick="openL('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">Learn about psychology: Strawberry Elephant</a>
+
+    <a onclick="copyChrome('chrome://settings/clearBrowserData')">
+      Chrome – Clear Browsing Data
+    </a>
+    <div class="note">Paste into Chrome’s address bar</div>
+
+    <a onclick="copyChrome('chrome://serviceworker-internals/')">
+      Chrome – Service Worker Internals
+    </a>
+    <div class="note">Paste into Chrome’s address bar</div>
   </div>
 </div>
 
@@ -219,7 +231,7 @@ fact.textContent = "Did you know? " + facts[Math.floor(Math.random() * facts.len
 const KEY = "emails";
 function saveEmail(e) {
   let a = JSON.parse(localStorage.getItem(KEY) || "[]");
-  if (!a.includes(e)) a.push(e);
+  if (e && !a.includes(e)) a.push(e);
   localStorage.setItem(KEY, JSON.stringify(a));
   emails.innerHTML = a.map(x => `<option value="${x}">`).join("");
 }
@@ -256,6 +268,11 @@ function copyFormula() {
   navigator.clipboard.writeText("?scrlcbp=.");
 }
 
+function copyChrome(u) {
+  navigator.clipboard.writeText(u)
+    .then(() => alert("Copied. Paste into Chrome’s address bar."));
+}
+
 /* Theme */
 function toggleTheme() {
   document.body.classList.toggle("light");
@@ -263,8 +280,8 @@ function toggleTheme() {
 }
 if (localStorage.theme) document.body.className = localStorage.theme;
 
-/* Floating math symbols (IMMEDIATE) */
-const symbols = ["π", "Σ", "∞", "√", "∫"];
+/* Floating symbols (immediate) */
+const symbols = ["π","Σ","∞","√","∫"];
 for (let i = 0; i < 25; i++) {
   const s = document.createElement("div");
   s.className = "symbol";
