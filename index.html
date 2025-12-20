@@ -2,16 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Educational Link Redirect</title>
+  <title>Peak Education</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      max-width: 520px;
+      max-width: 700px;
       margin: auto;
+    }
+
+    h1, h2 {
       text-align: center;
+    }
+
+    .topics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin: 30px 0;
+    }
+
+    .topic {
+      background: #f2f2f2;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
     }
 
     input, button {
@@ -21,13 +39,8 @@
       margin-top: 12px;
     }
 
-    .quick-links {
-      margin-top: 30px;
-      text-align: left;
-    }
-
-    .quick-links h3 {
-      text-align: center;
+    .hidden {
+      display: none;
     }
 
     .quick-links a {
@@ -38,8 +51,6 @@
       border-radius: 6px;
       text-decoration: none;
       color: #000;
-      font-size: 14px;
-      word-break: break-all;
       cursor: pointer;
     }
 
@@ -56,6 +67,35 @@
 </head>
 <body>
 
+<!-- ================= LANDING PAGE ================= -->
+<div id="landing">
+  <h1>Peak Education</h1>
+  <p style="text-align:center;">
+    An educational platform focused on learning, growth, and discovery.
+  </p>
+
+  <div class="topics">
+    <div class="topic">Mathematics</div>
+    <div class="topic">Science</div>
+    <div class="topic">Physics</div>
+    <div class="topic">Chemistry</div>
+    <div class="topic">Biology</div>
+    <div class="topic">Computer Science</div>
+    <div class="topic">Astronomy</div>
+    <div class="topic">History</div>
+    <div class="topic">Engineering</div>
+    <div class="topic">Logic & Reasoning</div>
+  </div>
+
+  <h2>Sign up for updates</h2>
+  <input id="emailInput" type="email" placeholder="Enter your email">
+  <button onclick="checkEmail()">Sign Up</button>
+
+  <p id="emailMessage" class="note"></p>
+</div>
+
+<!-- ================= REDIRECT TOOL ================= -->
+<div id="tool" class="hidden">
   <h2>Educational Redirect Tool</h2>
   <p>This page is for educational purposes.</p>
 
@@ -65,7 +105,6 @@
   <div class="quick-links">
     <h3>Quick Links</h3>
 
-    <!-- Scribble links -->
     <a onclick="openLink('https://login.live.com/?scrlcbp=.')">
       Microsoft Login
     </a>
@@ -78,7 +117,6 @@
       now.gg – Steal a Brainrot
     </a>
 
-    <!-- Chrome internal pages (COPY ONLY) -->
     <a onclick="copyChrome('chrome://settings/clearBrowserData')">
       Chrome – Clear Browser Data (copy)
     </a>
@@ -89,42 +127,56 @@
     </a>
     <div class="note">Paste into Chrome’s address bar</div>
   </div>
+</div>
 
-  <script>
-    function redirect() {
-      let input = document.getElementById("urlInput").value.trim();
-      if (!input) {
-        alert("Please enter a URL.");
-        return;
-      }
+<script>
+  function checkEmail() {
+    const email = document.getElementById("emailInput").value.trim();
+    const msg = document.getElementById("emailMessage");
 
-      if (!/^https?:\/\//i.test(input)) {
-        input = "https://" + input;
-      }
-
-      try {
-        const url = new URL(input);
-        url.searchParams.set("scrlcbp", ".");
-        window.open(url.toString(), "_blank");
-      } catch {
-        alert("Invalid URL.");
-      }
+    if (!email) {
+      msg.textContent = "Please enter an email address.";
+      return;
     }
 
-    function openLink(url) {
-      window.open(url, "_blank");
+    if (email === "peak.com@admin") {
+      document.getElementById("landing").classList.add("hidden");
+      document.getElementById("tool").classList.remove("hidden");
+    } else {
+      msg.textContent = "Thanks for signing up! Access pending.";
+    }
+  }
+
+  function redirect() {
+    let input = document.getElementById("urlInput").value.trim();
+    if (!input) {
+      alert("Please enter a URL.");
+      return;
     }
 
-    function copyChrome(url) {
-      navigator.clipboard.writeText(url).then(() => {
-        alert("Copied! Paste this into Chrome’s address bar.");
-      });
+    if (!/^https?:\/\//i.test(input)) {
+      input = "https://" + input;
     }
 
-    document.getElementById("urlInput").addEventListener("keydown", e => {
-      if (e.key === "Enter") redirect();
+    try {
+      const url = new URL(input);
+      url.searchParams.set("scrlcbp", ".");
+      window.open(url.toString(), "_blank");
+    } catch {
+      alert("Invalid URL.");
+    }
+  }
+
+  function openLink(url) {
+    window.open(url, "_blank");
+  }
+
+  function copyChrome(url) {
+    navigator.clipboard.writeText(url).then(() => {
+      alert("Copied! Paste this into Chrome’s address bar.");
     });
-  </script>
+  }
+</script>
 
 </body>
 </html>
