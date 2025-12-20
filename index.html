@@ -71,7 +71,7 @@
 <div id="landing">
   <h1>Peak Education</h1>
   <p style="text-align:center;">
-    An educational platform focused on learning, growth, and discovery.
+    An educational platform focused on learning, discovery, and growth.
   </p>
 
   <div class="topics">
@@ -88,9 +88,18 @@
   </div>
 
   <h2>Sign up for updates</h2>
-  <input id="emailInput" type="email" placeholder="Enter your email">
-  <button onclick="checkEmail()">Sign Up</button>
 
+  <input
+    id="emailInput"
+    type="email"
+    placeholder="Enter your email"
+    list="emailHistory"
+    autocomplete="off"
+  >
+
+  <datalist id="emailHistory"></datalist>
+
+  <button onclick="checkEmail()">Sign Up</button>
   <p id="emailMessage" class="note"></p>
 </div>
 
@@ -130,6 +139,27 @@
 </div>
 
 <script>
+  const EMAIL_KEY = "peak_email_history";
+
+  function loadEmails() {
+    const list = document.getElementById("emailHistory");
+    list.innerHTML = "";
+    const saved = JSON.parse(localStorage.getItem(EMAIL_KEY) || "[]");
+    saved.forEach(email => {
+      const option = document.createElement("option");
+      option.value = email;
+      list.appendChild(option);
+    });
+  }
+
+  function saveEmail(email) {
+    let saved = JSON.parse(localStorage.getItem(EMAIL_KEY) || "[]");
+    if (!saved.includes(email)) {
+      saved.push(email);
+      localStorage.setItem(EMAIL_KEY, JSON.stringify(saved));
+    }
+  }
+
   function checkEmail() {
     const email = document.getElementById("emailInput").value.trim();
     const msg = document.getElementById("emailMessage");
@@ -138,6 +168,9 @@
       msg.textContent = "Please enter an email address.";
       return;
     }
+
+    saveEmail(email);
+    loadEmails();
 
     if (email === "peak.com@admin") {
       document.getElementById("landing").classList.add("hidden");
@@ -176,6 +209,9 @@
       alert("Copied! Paste this into Chrome’s address bar.");
     });
   }
+
+  // Load saved emails on page load
+  loadEmails();
 </script>
 
 </body>
