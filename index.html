@@ -20,13 +20,7 @@ body {
   min-height: 100vh;
   font-family: Arial, sans-serif;
   color: var(--text);
-  background: linear-gradient(
-    270deg,
-    #0f2027,
-    #203a43,
-    #2c5364,
-    #1e3c72
-  );
+  background: linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1e3c72);
   background-size: 800% 800%;
   animation: bg 16s ease infinite;
   overflow-x: hidden;
@@ -38,7 +32,6 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* Floating math symbols */
 .symbol {
   position: fixed;
   bottom: -50px;
@@ -49,11 +42,9 @@ body {
 }
 
 @keyframes floatUp {
-  from { transform: translateY(0); }
   to { transform: translateY(-120vh); }
 }
 
-/* Container */
 .container {
   max-width: 720px;
   margin: 40px auto;
@@ -66,16 +57,8 @@ body {
 
 .hidden { display: none; }
 
-h1, h2, h3 {
-  text-align: center;
-}
+h1, h2, h3, p { text-align: center; }
 
-p {
-  text-align: center;
-  opacity: 0.9;
-}
-
-/* Topics */
 .topics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -88,16 +71,11 @@ p {
   border-radius: 14px;
   background: rgba(255,255,255,0.18);
   font-weight: bold;
-  text-align: center;
-  transition: transform .3s, box-shadow .3s;
+  transition: transform .3s;
 }
 
-.topic:hover {
-  transform: translateY(-6px) scale(1.05);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-}
+.topic:hover { transform: scale(1.05); }
 
-/* Inputs & buttons */
 input, button {
   width: 100%;
   padding: 14px;
@@ -107,23 +85,15 @@ input, button {
   border: none;
 }
 
-input {
-  background: rgba(255,255,255,0.95);
-  color: #000;
-}
+input { background: #fff; color: #000; }
 
 button {
   cursor: pointer;
-  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  background: linear-gradient(135deg,#00c6ff,#0072ff);
   color: #fff;
   font-weight: bold;
 }
 
-button:hover {
-  filter: brightness(1.1);
-}
-
-/* Links */
 .quick-links a {
   display: block;
   margin-top: 10px;
@@ -132,28 +102,19 @@ button:hover {
   border-radius: 12px;
   text-decoration: none;
   color: inherit;
-  transition: background .3s, transform .3s;
-}
-
-.quick-links a:hover {
-  background: rgba(255,255,255,0.3);
-  transform: translateX(4px);
 }
 
 .note {
   font-size: 12px;
-  opacity: 0.75;
+  opacity: 0.7;
   text-align: center;
 }
 
-/* Theme toggle */
 .toggle {
   position: fixed;
   top: 16px;
   right: 16px;
-  font-size: 20px;
   cursor: pointer;
-  user-select: none;
 }
 </style>
 </head>
@@ -176,9 +137,6 @@ button:hover {
     <div class="topic">Chemistry</div>
     <div class="topic">Biology</div>
     <div class="topic">Computer Science</div>
-    <div class="topic">Astronomy</div>
-    <div class="topic">Engineering</div>
-    <div class="topic">Logic</div>
   </div>
 
   <input id="emailInput" placeholder="Enter your email" list="emails">
@@ -198,106 +156,72 @@ button:hover {
 
   <div class="quick-links">
     <h3>Quick Links</h3>
-
     <a onclick="openL('https://login.live.com/?scrlcbp=.')">Microsoft Login</a>
     <a onclick="openL('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Math Battle Pass</a>
-    <a onclick="openL('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">Learn about psychology: Strawberry Elephant</a>
+    <a onclick="openL('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">Psychology Lab</a>
 
-    <a onclick="copyChrome('chrome://settings/clearBrowserData')">
-      Chrome – Clear Browsing Data
-    </a>
-    <div class="note">Paste into Chrome’s address bar</div>
-
-    <a onclick="copyChrome('chrome://serviceworker-internals/')">
-      Chrome – Service Worker Internals
-    </a>
-    <div class="note">Paste into Chrome’s address bar</div>
+    <a onclick="copyChrome('chrome://settings/clearBrowserData')">Chrome – Clear Browsing Data</a>
+    <a onclick="copyChrome('chrome://serviceworker-internals/')">Chrome – Service Worker Internals</a>
   </div>
 </div>
 
 </div>
 
 <script>
-/* Daily fact */
 const facts = [
   "0.999… = 1",
   "π is irrational",
-  "There are more trees on Earth than stars in the Milky Way",
   "A day on Venus is longer than a year"
 ];
-fact.textContent = "Did you know? " + facts[Math.floor(Math.random() * facts.length)];
+fact.textContent = "Did you know? " + facts[Math.floor(Math.random()*facts.length)];
 
-/* Email history */
 const KEY = "emails";
-function saveEmail(e) {
+function saveEmail(e){
   let a = JSON.parse(localStorage.getItem(KEY) || "[]");
-  if (e && !a.includes(e)) a.push(e);
+  if(e && !a.includes(e)) a.push(e);
   localStorage.setItem(KEY, JSON.stringify(a));
-  emails.innerHTML = a.map(x => `<option value="${x}">`).join("");
+  emails.innerHTML = a.map(x=>`<option value="${x}">`).join("");
 }
 saveEmail("");
 
-function checkEmail() {
+function checkEmail(){
   const e = emailInput.value.trim();
-  if (!e) return;
+  if(!e) return;
   saveEmail(e);
-
-  if (e === "peak.com@admin") {
-    landing.classList.add("hidden");
-    tool.classList.remove("hidden");
-  } else {
-    msg.textContent = "Thanks for signing up! Access pending.";
-  }
-}
-
-/* Redirect */
-function redirect() {
-  let u = urlInput.value.trim();
-  if (!u) return;
-  if (!u.startsWith("http")) u = "https://" + u;
-  const url = new URL(u);
-  url.searchParams.set("scrlcbp", ".");
-  window.open(url.toString(), "_blank");
-}
-
-function openL(u) {
-  window.open(u, "_blank");
-}
-
-function copyFormula() {
-  navigator.clipboard.writeText("?scrlcbp=.");
-}
-
-function copyChrome(u) {
-  navigator.clipboard.writeText(u)
-    .then(() => alert("Copied. Paste into Chrome’s address bar."));
-}
-
-/* Theme */
-function toggleTheme() {
-  document.body.classList.toggle("light");
-  localStorage.theme = document.body.className;
-}
-if (localStorage.theme) document.body.className = localStorage.theme;
-
-/* Floating symbols (immediate) */
-const symbols = ["π","Σ","∞","√","∫"];
-for (let i = 0; i < 25; i++) {
-  const s = document.createElement("div");
-  s.className = "symbol";
-  s.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-  s.style.left = Math.random() * 100 + "vw";
-  s.style.animationDuration = 18 + Math.random() * 18 + "s";
-  document.body.appendChild(s);
-}
-
-/* Admin URL shortcut */
-if (location.search.includes("admin=true")) {
   landing.classList.add("hidden");
   tool.classList.remove("hidden");
 }
 
-console.log("Peak Education • internal build");
+function redirect(){
+  let u = urlInput.value.trim();
+  if(!u) return;
+  if(!u.startsWith("http")) u = "https://" + u;
+  const url = new URL(u);
+  url.searchParams.set("scrlcbp",".");
+  window.open(url.toString(),"_blank");
+}
+
+function openL(u){ window.open(u,"_blank"); }
+function copyFormula(){ navigator.clipboard.writeText("?scrlcbp=."); }
+function copyChrome(u){ navigator.clipboard.writeText(u); }
+
+function toggleTheme(){
+  document.body.classList.toggle("light");
+  localStorage.theme = document.body.className;
+}
+if(localStorage.theme) document.body.className = localStorage.theme;
+
+const symbols=["π","Σ","∞","√","∫"];
+for(let i=0;i<25;i++){
+  const s=document.createElement("div");
+  s.className="symbol";
+  s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+  s.style.left=Math.random()*100+"vw";
+  s.style.animationDuration=15+Math.random()*15+"s";
+  document.body.appendChild(s);
+}
+
+console.log("Peak Education • frontend build");
 </script>
 
 </body>
