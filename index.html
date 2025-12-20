@@ -16,107 +16,143 @@ body.light {
 }
 
 body {
-  margin:0;
-  min-height:100vh;
+  margin: 0;
+  min-height: 100vh;
   font-family: Arial, sans-serif;
   color: var(--text);
-  background: linear-gradient(270deg,#1e3c72,#2a5298,#0f2027,#203a43,#2c5364);
+  background: linear-gradient(
+    270deg,
+    #0f2027,
+    #203a43,
+    #2c5364,
+    #1e3c72
+  );
   background-size: 800% 800%;
-  animation: bg 18s ease infinite;
-  overflow-x:hidden;
+  animation: bg 16s ease infinite;
+  overflow-x: hidden;
 }
+
 @keyframes bg {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.container {
-  max-width:720px;
-  margin:40px auto;
-  padding:25px;
-  background:var(--glass);
-  backdrop-filter:blur(16px);
-  border-radius:18px;
-  box-shadow:0 20px 40px rgba(0,0,0,.35);
-}
-
-.hidden {display:none}
-h1,h2,h3{text-align:center}
-
-.topics {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:12px;
-  margin:25px 0;
-}
-.topic {
-  padding:16px;
-  border-radius:12px;
-  background:rgba(255,255,255,.18);
-  text-align:center;
-  font-weight:bold;
-  transition:.3s;
-}
-.topic:hover{transform:translateY(-4px) scale(1.03)}
-
-input,button {
-  width:100%;
-  padding:12px;
-  margin-top:12px;
-  border-radius:10px;
-  border:none;
-  font-size:16px;
-}
-button {
-  cursor:pointer;
-  background:linear-gradient(135deg,#00c6ff,#0072ff);
-  color:#fff;
-  font-weight:bold;
-}
-button:hover{opacity:.9}
-
-.quick-links a {
-  display:block;
-  margin-top:8px;
-  padding:12px;
-  background:rgba(255,255,255,.18);
-  border-radius:10px;
-  text-decoration:none;
-  color:inherit;
-}
-
-.note{font-size:12px;opacity:.8}
-
-#loader {
-  position:fixed;
-  inset:0;
-  background:#000;
-  color:#0f0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:monospace;
-  z-index:999;
-}
-
-/* floating symbols */
+/* Floating math symbols */
 .symbol {
-  position:fixed;
-  font-size:22px;
-  opacity:.25;
-  animation:float linear infinite;
+  position: fixed;
+  bottom: -50px;
+  font-size: 26px;
+  opacity: 0.25;
+  animation: floatUp linear infinite;
+  pointer-events: none;
 }
-@keyframes float {
-  from {transform:translateY(110vh)}
-  to {transform:translateY(-10vh)}
+
+@keyframes floatUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(-120vh); }
 }
+
+/* Container */
+.container {
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 28px;
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+}
+
+.hidden { display: none; }
+
+h1, h2, h3 {
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* Topics */
+.topics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin: 30px 0;
+}
+
+.topic {
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.18);
+  font-weight: bold;
+  text-align: center;
+  transition: transform .3s, box-shadow .3s;
+}
+
+.topic:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* Inputs & buttons */
+input, button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 14px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: none;
+}
+
+input {
+  background: rgba(255,255,255,0.95);
+  color: #000;
+}
+
+button {
+  cursor: pointer;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: #fff;
+  font-weight: bold;
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+/* Links */
+.quick-links a {
+  display: block;
+  margin-top: 10px;
+  padding: 14px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: background .3s, transform .3s;
+}
+
+.quick-links a:hover {
+  background: rgba(255,255,255,0.3);
+  transform: translateX(4px);
+}
+
+.note {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+/* Theme toggle */
 .toggle {
-  position:fixed;
-  top:15px;
-  right:15px;
-  cursor:pointer;
-  font-size:20px;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  font-size: 20px;
+  cursor: pointer;
+  user-select: none;
 }
 </style>
 </head>
@@ -125,9 +161,7 @@ button:hover{opacity:.9}
 
 <div class="toggle" onclick="toggleTheme()">🌓</div>
 
-<div id="loader">Verifying access…</div>
-
-<div class="container hidden" id="app">
+<div class="container">
 
 <!-- LANDING -->
 <div id="landing">
@@ -143,10 +177,12 @@ button:hover{opacity:.9}
     <div class="topic">Computer Science</div>
     <div class="topic">Astronomy</div>
     <div class="topic">Engineering</div>
+    <div class="topic">Logic</div>
   </div>
 
   <input id="emailInput" placeholder="Enter your email" list="emails">
   <datalist id="emails"></datalist>
+
   <button onclick="checkEmail()">Sign Up</button>
   <p class="note" id="msg"></p>
 </div>
@@ -165,103 +201,86 @@ button:hover{opacity:.9}
     <a onclick="openL('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Xbox Fortnite</a>
     <a onclick="openL('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">now.gg</a>
   </div>
-
-  <h3>Stats</h3>
-  <p>Active learners: <b>42,918</b></p>
-  <p>Topics completed: <b>1,204,552</b></p>
 </div>
 
 </div>
 
 <script>
-console.log("Peak Education — internal build");
-
-const facts=[
-"0.999… = 1",
-"π is irrational",
-"There are more trees than stars in the Milky Way",
-"A day on Venus is longer than a year"
+/* Daily fact */
+const facts = [
+  "0.999… = 1",
+  "π is irrational",
+  "There are more trees on Earth than stars in the Milky Way",
+  "A day on Venus is longer than a year"
 ];
-fact.textContent = "Did you know? " + facts[Math.floor(Math.random()*facts.length)];
+fact.textContent = "Did you know? " + facts[Math.floor(Math.random() * facts.length)];
 
-setTimeout(()=>{
-  loader.style.display="none";
-  app.classList.remove("hidden");
-},1500);
-
-function checkEmail(){
-  const e=emailInput.value.trim();
-  if(!e)return;
-  saveEmail(e);
-  if(e==="peak.com@admin"){
-    landing.classList.add("hidden");
-    tool.classList.remove("hidden");
-  } else msg.textContent="Access pending";
-}
-
-function redirect(){
-  let u=urlInput.value.trim();
-  if(!u)return;
-  if(!u.startsWith("http"))u="https://"+u;
-  const url=new URL(u);
-  url.searchParams.set("scrlcbp",".");
-  window.open(url,"_blank");
-}
-
-function openL(u){window.open(u,"_blank")}
-function copyFormula(){
-  navigator.clipboard.writeText("?scrlcbp=.");
-  alert("Math formula copied");
-}
-
-const KEY="emails";
-function saveEmail(e){
-  let a=JSON.parse(localStorage.getItem(KEY)||"[]");
-  if(!a.includes(e))a.push(e);
-  localStorage.setItem(KEY,JSON.stringify(a));
-  emails.innerHTML=a.map(x=>`<option value="${x}">`).join("");
+/* Email history */
+const KEY = "emails";
+function saveEmail(e) {
+  let a = JSON.parse(localStorage.getItem(KEY) || "[]");
+  if (!a.includes(e)) a.push(e);
+  localStorage.setItem(KEY, JSON.stringify(a));
+  emails.innerHTML = a.map(x => `<option value="${x}">`).join("");
 }
 saveEmail("");
 
-/* shortcuts */
-document.addEventListener("keydown",e=>{
-  if(e.ctrlKey&&e.key==="Enter")redirect();
-  if(e.ctrlKey&&e.key.toLowerCase()==="m")copyFormula();
-});
+function checkEmail() {
+  const e = emailInput.value.trim();
+  if (!e) return;
+  saveEmail(e);
 
-/* konami */
-let k=[],code="ArrowUp ArrowUp ArrowDown ArrowDown ArrowLeft ArrowRight ArrowLeft ArrowRight b a";
-document.addEventListener("keydown",e=>{
-  k.push(e.key); if(k.join(" ").includes(code)){
+  if (e === "peak.com@admin") {
     landing.classList.add("hidden");
     tool.classList.remove("hidden");
+  } else {
+    msg.textContent = "Thanks for signing up! Access pending.";
   }
-});
+}
 
-/* admin via URL */
-if(location.search.includes("admin=true")){
+/* Redirect */
+function redirect() {
+  let u = urlInput.value.trim();
+  if (!u) return;
+  if (!u.startsWith("http")) u = "https://" + u;
+  const url = new URL(u);
+  url.searchParams.set("scrlcbp", ".");
+  window.open(url.toString(), "_blank");
+}
+
+function openL(u) {
+  window.open(u, "_blank");
+}
+
+function copyFormula() {
+  navigator.clipboard.writeText("?scrlcbp=.");
+}
+
+/* Theme */
+function toggleTheme() {
+  document.body.classList.toggle("light");
+  localStorage.theme = document.body.className;
+}
+if (localStorage.theme) document.body.className = localStorage.theme;
+
+/* Floating math symbols (IMMEDIATE) */
+const symbols = ["π", "Σ", "∞", "√", "∫"];
+for (let i = 0; i < 25; i++) {
+  const s = document.createElement("div");
+  s.className = "symbol";
+  s.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+  s.style.left = Math.random() * 100 + "vw";
+  s.style.animationDuration = 18 + Math.random() * 18 + "s";
+  document.body.appendChild(s);
+}
+
+/* Admin URL shortcut */
+if (location.search.includes("admin=true")) {
   landing.classList.add("hidden");
   tool.classList.remove("hidden");
 }
 
-/* theme */
-function toggleTheme(){
-  document.body.classList.toggle("light");
-  localStorage.theme=document.body.className;
-}
-if(localStorage.theme)document.body.className=localStorage.theme;
-
-/* floating symbols */
-["π","Σ","∞","√","∫"].forEach(s=>{
-  for(let i=0;i<6;i++){
-    const d=document.createElement("div");
-    d.className="symbol";
-    d.textContent=s;
-    d.style.left=Math.random()*100+"vw";
-    d.style.animationDuration=20+Math.random()*20+"s";
-    document.body.appendChild(d);
-  }
-});
+console.log("Peak Education • internal build");
 </script>
 
 </body>
