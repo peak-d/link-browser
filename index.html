@@ -1,78 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Peak Education</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Peak Education</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 700px;
-      margin: auto;
-    }
+<style>
+  /* ====== COOL BACKGROUND ====== */
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(
+      270deg,
+      #1e3c72,
+      #2a5298,
+      #0f2027,
+      #203a43,
+      #2c5364
+    );
+    background-size: 1000% 1000%;
+    animation: gradientMove 18s ease infinite;
+    color: #fff;
+  }
 
-    h1, h2 {
-      text-align: center;
-    }
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
 
-    .topics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin: 30px 0;
-    }
+  /* ====== GLASS CONTAINER ====== */
+  .container {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 25px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(14px);
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+  }
 
-    .topic {
-      background: #f2f2f2;
-      padding: 16px;
-      border-radius: 8px;
-      text-align: center;
-      font-weight: bold;
-    }
+  h1, h2, h3 {
+    text-align: center;
+  }
 
-    input, button {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      margin-top: 12px;
-    }
+  p {
+    text-align: center;
+    opacity: 0.9;
+  }
 
-    .hidden {
-      display: none;
-    }
+  .topics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 30px 0;
+  }
 
-    .quick-links a {
-      display: block;
-      padding: 10px;
-      margin-top: 8px;
-      background: #f2f2f2;
-      border-radius: 6px;
-      text-decoration: none;
-      color: #000;
-      cursor: pointer;
-    }
+  .topic {
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bold;
+    background: rgba(255,255,255,0.18);
+  }
 
-    .quick-links a:hover {
-      background: #e0e0e0;
-    }
+  input, button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 12px;
+    border-radius: 10px;
+    border: none;
+  }
 
-    .note {
-      font-size: 12px;
-      color: #555;
-      margin-top: 6px;
-    }
-  </style>
+  input {
+    background: rgba(255,255,255,0.9);
+    color: #000;
+  }
+
+  button {
+    cursor: pointer;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+    font-weight: bold;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .quick-links a {
+    display: block;
+    margin-top: 8px;
+    padding: 12px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .quick-links a:hover {
+    background: rgba(255,255,255,0.28);
+  }
+
+  .note {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 6px;
+  }
+</style>
 </head>
+
 <body>
 
-<!-- ========== LANDING PAGE ========== -->
+<div class="container">
+
+<!-- ===== LANDING ===== -->
 <div id="landing">
   <h1>Peak Education</h1>
-  <p style="text-align:center;">
-    An educational platform focused on learning and discovery.
-  </p>
+  <p>Learning • Discovery • Growth</p>
 
   <div class="topics">
     <div class="topic">Mathematics</div>
@@ -102,41 +153,31 @@
   <p id="emailMessage" class="note"></p>
 </div>
 
-<!-- ========== TOOL PAGE ========== -->
+<!-- ===== TOOL ===== -->
 <div id="tool" class="hidden">
   <h2>Educational Redirect Tool</h2>
-  <p>This page is for educational purposes.</p>
+  <p>For educational purposes.</p>
 
   <input id="urlInput" placeholder="Enter a website URL">
   <button onclick="redirect()">Open in New Tab</button>
 
-  <button onclick="copyScribble()">Copy ?scrlcbp=.</button>
+  <button onclick="copyScribble()">Copy Math Formula</button>
 
   <div class="quick-links">
     <h3>Quick Links</h3>
 
-    <a onclick="openLink('https://login.live.com/?scrlcbp=.')">
-      Microsoft Login
-    </a>
+    <a onclick="openLink('https://login.live.com/?scrlcbp=.')">Microsoft Login</a>
+    <a onclick="openLink('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Math Battle Pass</a>
+    <a onclick="openLink('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">Starwberry Elephant, diving into the world of psychology</a>
 
-    <a onclick="openLink('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">
-      Xbox Fortnite
-    </a>
-
-    <a onclick="openLink('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">
-      now.gg – Steal a Brainrot
-    </a>
-
-    <a onclick="copyChrome('chrome://settings/clearBrowserData')">
-      Chrome – Clear Browser Data (copy)
-    </a>
+    <a onclick="copyChrome('chrome://settings/clearBrowserData')">Chrome – Clear Browser Data</a>
     <div class="note">Paste into Chrome’s address bar</div>
 
-    <a onclick="copyChrome('chrome://serviceworker-internals/')">
-      Chrome – Service Worker Internals (copy)
-    </a>
+    <a onclick="copyChrome('chrome://serviceworker-internals/')">Chrome – Service Worker Internals</a>
     <div class="note">Paste into Chrome’s address bar</div>
   </div>
+</div>
+
 </div>
 
 <script>
@@ -146,10 +187,10 @@
     const list = document.getElementById("emailHistory");
     list.innerHTML = "";
     const saved = JSON.parse(localStorage.getItem(EMAIL_KEY) || "[]");
-    saved.forEach(email => {
-      const option = document.createElement("option");
-      option.value = email;
-      list.appendChild(option);
+    saved.forEach(e => {
+      const o = document.createElement("option");
+      o.value = e;
+      list.appendChild(o);
     });
   }
 
@@ -162,37 +203,31 @@
   }
 
   function checkEmail() {
-    const email = document.getElementById("emailInput").value.trim();
-    const msg = document.getElementById("emailMessage");
-
-    if (!email) {
-      msg.textContent = "Please enter an email address.";
-      return;
-    }
-
+    const email = emailInput.value.trim();
+    if (!email) return;
     saveEmail(email);
     loadEmails();
 
     if (email === "peak.com@admin") {
-      document.getElementById("landing").classList.add("hidden");
-      document.getElementById("tool").classList.remove("hidden");
+      landing.classList.add("hidden");
+      tool.classList.remove("hidden");
     } else {
-      msg.textContent = "Thanks for signing up! Access pending.";
+      emailMessage.textContent = "Thanks for signing up! Access pending.";
     }
   }
 
   function redirect() {
-    let input = document.getElementById("urlInput").value.trim();
-    if (!input) return alert("Enter a URL");
+    let input = urlInput.value.trim();
+    if (!input) return;
 
     if (!input.startsWith("http")) {
       input = "https://" + input;
     }
 
     try {
-      const url = new URL(input);
-      url.searchParams.set("scrlcbp", ".");
-      window.open(url.toString(), "_blank");
+      const u = new URL(input);
+      u.searchParams.set("scrlcbp", ".");
+      window.open(u.toString(), "_blank");
     } catch {
       alert("Invalid URL");
     }
@@ -204,12 +239,12 @@
 
   function copyChrome(url) {
     navigator.clipboard.writeText(url)
-      .then(() => alert("Copied. Paste into Chrome."));
+      .then(() => alert("Copied to clipboard"));
   }
 
   function copyScribble() {
     navigator.clipboard.writeText("?scrlcbp=.")
-      .then(() => alert("?scrlcbp=. copied"));
+      .then(() => alert("Math formula copied"));
   }
 
   loadEmails();
