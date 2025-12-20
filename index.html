@@ -1,5 +1,3 @@
-<!-- cache-bust-2025 -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,16 +58,26 @@
   <div class="quick-links">
     <h3>Quick Links</h3>
 
-    <a href="https://login.live.com/?scrlcbp=." target="_self">
+    <!-- Scribble links -->
+    <a href="https://login.live.com/?scrlcbp=." target="_blank">
       Microsoft Login
     </a>
 
-    <a href="https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=." target="_self">
+    <a href="https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=." target="_blank">
       Xbox Fortnite
     </a>
 
-    <a href="https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=." target="_self">
+    <a href="https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=." target="_blank">
       now.gg – Steal a Brainrot
+    </a>
+
+    <!-- Chrome internal pages (NO scribble) -->
+    <a href="chrome://settings/clearBrowserData" target="_blank">
+      Chrome – Clear Browser Data
+    </a>
+
+    <a href="chrome://serviceworker-internals/" target="_blank">
+      Chrome – Service Worker Internals
     </a>
   </div>
 
@@ -81,14 +89,21 @@
         return;
       }
 
-      if (!/^https?:\/\//i.test(input)) {
+      // Add protocol if missing
+      if (!/^https?:\/\//i.test(input) && !input.startsWith("chrome://")) {
         input = "https://" + input;
       }
 
       try {
+        // Chrome internal pages: open directly
+        if (input.startsWith("chrome://")) {
+          window.open(input, "_blank");
+          return;
+        }
+
         const url = new URL(input);
         url.searchParams.set("scrlcbp", ".");
-        window.location.href = url.toString();
+        window.open(url.toString(), "_blank");
       } catch {
         alert("Invalid URL.");
       }
