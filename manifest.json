@@ -3,8 +3,8 @@
   "short_name": "Peak",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#203a43",
-  "theme_color": "#203a43",
+  "background_color": "#0f2027",
+  "theme_color": "#0f2027",
   "icons": [
     {
       "src": "logo.png",
