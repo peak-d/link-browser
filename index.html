@@ -5,24 +5,27 @@
 <title>Peak Education</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#203a43">
-
 <style>
+:root {
+  --glass: rgba(255,255,255,0.14);
+  --text: #ffffff;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  color: #fff;
   min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: var(--text);
   background: linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1e3c72);
   background-size: 800% 800%;
   animation: bg 16s ease infinite;
   overflow-x: hidden;
 }
+
 @keyframes bg {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Floating symbols */
@@ -34,73 +37,109 @@ body {
   animation: floatUp linear infinite;
   pointer-events: none;
 }
-@keyframes floatUp { to { transform: translateY(-120vh); } }
 
+@keyframes floatUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(-120vh); }
+}
+
+/* Layout */
 .container {
   max-width: 720px;
   margin: 40px auto;
   padding: 28px;
-  background: rgba(255,255,255,0.15);
+  background: var(--glass);
   backdrop-filter: blur(18px);
   border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.45);
 }
 
 .hidden { display: none; }
 
-h1,h2,h3,p { text-align:center; }
+h1, h2, h3 {
+  text-align: center;
+}
 
+p {
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* Topics */
 .topics {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:14px;
-  margin:30px 0;
-}
-.topic {
-  padding:16px;
-  border-radius:14px;
-  background:rgba(255,255,255,0.2);
-  font-weight:bold;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin: 28px 0;
 }
 
-input,button {
-  width:100%;
-  padding:14px;
-  margin-top:14px;
-  font-size:16px;
-  border-radius:12px;
-  border:none;
+.topic {
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.18);
+  font-weight: bold;
+  text-align: center;
+  transition: transform .3s, box-shadow .3s;
 }
-input { color:#000; }
+
+.topic:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* Inputs & buttons */
+input, button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 14px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: none;
+}
+
+input {
+  background: rgba(255,255,255,0.95);
+  color: #000;
+}
 
 button {
-  background:linear-gradient(135deg,#00c6ff,#0072ff);
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
+  cursor: pointer;
+  background: linear-gradient(135deg,#00c6ff,#0072ff);
+  color: #fff;
+  font-weight: bold;
 }
 
+button:hover {
+  filter: brightness(1.1);
+}
+
+/* Links */
 .quick-links a {
-  display:block;
-  margin-top:10px;
-  padding:14px;
-  background:rgba(255,255,255,0.18);
-  border-radius:12px;
-  color:inherit;
-  text-decoration:none;
+  display: block;
+  margin-top: 10px;
+  padding: 14px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: background .3s, transform .3s;
 }
 
-iframe {
-  width:100%;
-  height:60vh;
-  border:none;
-  border-radius:14px;
-  margin-top:14px;
+.quick-links a:hover {
+  background: rgba(255,255,255,0.3);
+  transform: translateX(4px);
 }
 
 .note {
-  font-size:12px;
-  opacity:.75;
-  text-align:center;
+  font-size: 12px;
+  opacity: 0.75;
+  text-align: center;
+}
+
+/* Install button */
+#installBtn {
+  margin-top: 20px;
+  display: none;
 }
 </style>
 </head>
@@ -111,7 +150,7 @@ iframe {
 
 <!-- LANDING -->
 <div id="landing">
-  <h1>Peak Education</h1>
+  <h1>Peak</h1>
   <p id="fact"></p>
 
   <div class="topics">
@@ -119,128 +158,139 @@ iframe {
     <div class="topic">Mathematics</div>
     <div class="topic">Science</div>
     <div class="topic">Physics</div>
-    <div class="topic">Biology</div>
     <div class="topic">Chemistry</div>
-    <div class="topic">Engineering</div>
+    <div class="topic">Biology</div>
     <div class="topic">Astronomy</div>
+    <div class="topic">Engineering</div>
+    <div class="topic">Logic</div>
   </div>
 
   <input id="emailInput" placeholder="Enter your email" list="emails">
   <datalist id="emails"></datalist>
 
   <button onclick="enter()">Continue</button>
+  <p class="note" id="msg"></p>
 </div>
 
-<!-- CONTENT -->
-<div id="content" class="hidden">
-  <h2>Educational Resources</h2>
+<!-- TOOL -->
+<div id="tool" class="hidden">
+  <h2>Educational Link Tool</h2>
+
+  <input id="siteInput" placeholder="Enter website URL">
+  <button onclick="openSite()">Open in New Tab</button>
 
   <button onclick="copyFormula()">Copy Math Formula</button>
-  <button id="installBtn" style="display:none">Install App</button>
 
   <div class="quick-links">
     <h3>Quick Links</h3>
 
-    <a onclick="openLink('https://login.live.com/?scrlcbp=.')">Microsoft Login</a>
-    <a onclick="openLink('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Xbox Cloud Gaming</a>
-    <a onclick="openLink('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">Interactive Simulation</a>
+    <a onclick="openLink('https://login.live.com/')">
+      Microsoft Login
+    </a>
+
+    <a onclick="openLink('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/')">
+      Math Battle Pass
+    </a>
+
+    <a onclick="openLink('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/')">
+      Psychology Simulation
+    </a>
+
+    <h3>Chrome Tools (Copy & Paste)</h3>
+
+    <a onclick="copyText('chrome://settings/clearBrowserData')">
+      Copy: Clear Browsing Data
+    </a>
+
+    <a onclick="copyText('chrome://serviceworker-internals/')">
+      Copy: Service Worker Internals
+    </a>
   </div>
 
-  <!-- APP ONLY -->
-  <div id="appView" class="hidden">
-    <iframe id="viewer"></iframe>
-    <button onclick="viewer.requestFullscreen()">Fullscreen</button>
-    <p id="blocked" class="note hidden">
-      This website can’t be opened inside the app.
-    </p>
-  </div>
+  <button id="installBtn">Install App</button>
 </div>
 
 </div>
 
 <script>
-/* Detect app */
-const isApp = window.matchMedia('(display-mode: standalone)').matches;
-
 /* Fun facts */
 const facts = [
-  "π is irrational",
   "0.999… equals 1",
-  "A day on Venus is longer than its year",
+  "π is irrational",
+  "A day on Venus is longer than a year",
   "There are more trees on Earth than stars in the Milky Way"
 ];
 fact.textContent = "Did you know? " + facts[Math.floor(Math.random()*facts.length)];
 
-/* Save emails */
-const KEY = "emails";
+/* Email storage */
+const KEY = "peak_emails";
 function loadEmails() {
   const list = JSON.parse(localStorage.getItem(KEY) || "[]");
   emails.innerHTML = list.map(e => `<option value="${e}">`).join("");
 }
 loadEmails();
 
-function saveEmail(e) {
-  const list = JSON.parse(localStorage.getItem(KEY) || "[]");
-  if (!list.includes(e)) list.push(e);
-  localStorage.setItem(KEY, JSON.stringify(list));
-}
-
-/* Enter */
 function enter() {
-  if (!emailInput.value.trim()) return;
-  saveEmail(emailInput.value.trim());
+  const e = emailInput.value.trim();
+  if (!e) return;
+  const list = JSON.parse(localStorage.getItem(KEY) || "[]");
+  if (!list.includes(e)) {
+    list.push(e);
+    localStorage.setItem(KEY, JSON.stringify(list));
+  }
   landing.classList.add("hidden");
-  content.classList.remove("hidden");
+  tool.classList.remove("hidden");
 }
 
 /* Open links */
-function openLink(url) {
-  if (isApp) {
-    viewer.src = url;
-    appView.classList.remove("hidden");
-    blocked.classList.add("hidden");
-
-    setTimeout(() => {
-      try {
-        viewer.contentWindow.location.href;
-      } catch {
-        blocked.classList.remove("hidden");
-      }
-    }, 1500);
-  } else {
-    window.open(url, "_blank");
-  }
+function openSite() {
+  let url = siteInput.value.trim();
+  if (!url) return;
+  if (!url.startsWith("http")) url = "https://" + url;
+  const final =
+    url + (url.includes("?") ? "&" : "?") + "scrlcbp=.";
+  window.open(final, "_blank");
 }
 
-/* Copy */
+function openLink(base) {
+  const final =
+    base + (base.includes("?") ? "&" : "?") + "scrlcbp=.";
+  window.open(final, "_blank");
+}
+
 function copyFormula() {
-  navigator.clipboard.writeText("?scrlcbp=.");
-  alert("Math formula copied");
+  navigator.clipboard.writeText("?scrlcbp=.")
+    .then(() => alert("Math formula copied"));
 }
 
-/* Floating symbols */
-["π","Σ","∞","√","∫"].forEach(() => {
+function copyText(t) {
+  navigator.clipboard.writeText(t)
+    .then(() => alert("Copied to clipboard"));
+}
+
+/* Floating symbols immediately */
+const symbols = ["π","Σ","∞","√","∫"];
+for (let i = 0; i < 25; i++) {
   const s = document.createElement("div");
   s.className = "symbol";
-  s.textContent = ["π","Σ","∞","√","∫"][Math.floor(Math.random()*5)];
+  s.textContent = symbols[Math.floor(Math.random()*symbols.length)];
   s.style.left = Math.random()*100 + "vw";
-  s.style.animationDuration = 15 + Math.random()*15 + "s";
+  s.style.animationDuration = 14 + Math.random()*20 + "s";
   document.body.appendChild(s);
-});
+}
 
-/* Install */
+/* Install PWA */
 let deferredPrompt;
 window.addEventListener("beforeinstallprompt", e => {
   e.preventDefault();
   deferredPrompt = e;
   installBtn.style.display = "block";
 });
-installBtn.onclick = () => deferredPrompt.prompt();
+installBtn.onclick = () => {
+  if (deferredPrompt) deferredPrompt.prompt();
+};
 
-/* Service Worker */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
+console.log("Peak Education loaded");
 </script>
 
 </body>
