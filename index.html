@@ -36,7 +36,6 @@ body {
 }
 @keyframes floatUp { to { transform: translateY(-120vh); } }
 
-/* UI */
 .container {
   max-width: 720px;
   margin: 40px auto;
@@ -45,6 +44,7 @@ body {
   backdrop-filter: blur(18px);
   border-radius: 20px;
 }
+
 .hidden { display: none; }
 
 h1,h2,h3,p { text-align:center; }
@@ -60,7 +60,6 @@ h1,h2,h3,p { text-align:center; }
   border-radius:14px;
   background:rgba(255,255,255,0.2);
   font-weight:bold;
-  text-align:center;
 }
 
 input,button {
@@ -72,6 +71,7 @@ input,button {
   border:none;
 }
 input { color:#000; }
+
 button {
   background:linear-gradient(135deg,#00c6ff,#0072ff);
   color:#fff;
@@ -96,6 +96,7 @@ iframe {
   border-radius:14px;
   margin-top:14px;
 }
+
 .note {
   font-size:12px;
   opacity:.75;
@@ -111,7 +112,7 @@ iframe {
 <!-- LANDING -->
 <div id="landing">
   <h1>Peak Education</h1>
-  <p>Explore learning across modern disciplines</p>
+  <p id="fact"></p>
 
   <div class="topics">
     <div class="topic">Computer Science</div>
@@ -124,40 +125,33 @@ iframe {
     <div class="topic">Astronomy</div>
   </div>
 
-  <input id="email" placeholder="Enter your email">
-  <button onclick="unlock()">Continue</button>
+  <input id="emailInput" placeholder="Enter your email" list="emails">
+  <datalist id="emails"></datalist>
+
+  <button onclick="enter()">Continue</button>
 </div>
 
-<!-- TOOLS -->
-<div id="tools" class="hidden">
-  <h2>Educational Tools</h2>
+<!-- CONTENT -->
+<div id="content" class="hidden">
+  <h2>Educational Resources</h2>
 
   <button onclick="copyFormula()">Copy Math Formula</button>
-
   <button id="installBtn" style="display:none">Install App</button>
 
   <div class="quick-links">
     <h3>Quick Links</h3>
 
-    <a onclick="openLink('https://login.live.com/?scrlcbp=.')">
-      Microsoft Login
-    </a>
-
-    <a onclick="openLink('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">
-      Xbox Cloud Gaming
-    </a>
-
-    <a onclick="openLink('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">
-      Interactive Simulation
-    </a>
+    <a onclick="openLink('https://login.live.com/?scrlcbp=.')">Microsoft Login</a>
+    <a onclick="openLink('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Xbox Cloud Gaming</a>
+    <a onclick="openLink('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">Interactive Simulation</a>
   </div>
 
-  <!-- APP VIEW -->
+  <!-- APP ONLY -->
   <div id="appView" class="hidden">
     <iframe id="viewer"></iframe>
-    <button onclick="fullscreen()">Fullscreen</button>
+    <button onclick="viewer.requestFullscreen()">Fullscreen</button>
     <p id="blocked" class="note hidden">
-      This website can’t be opened inside the app. Open externally.
+      This website can’t be opened inside the app.
     </p>
   </div>
 </div>
@@ -165,15 +159,41 @@ iframe {
 </div>
 
 <script>
+/* Detect app */
 const isApp = window.matchMedia('(display-mode: standalone)').matches;
 
-function unlock() {
-  if (!email.value.trim()) return;
-  landing.classList.add("hidden");
-  tools.classList.remove("hidden");
+/* Fun facts */
+const facts = [
+  "π is irrational",
+  "0.999… equals 1",
+  "A day on Venus is longer than its year",
+  "There are more trees on Earth than stars in the Milky Way"
+];
+fact.textContent = "Did you know? " + facts[Math.floor(Math.random()*facts.length)];
+
+/* Save emails */
+const KEY = "emails";
+function loadEmails() {
+  const list = JSON.parse(localStorage.getItem(KEY) || "[]");
+  emails.innerHTML = list.map(e => `<option value="${e}">`).join("");
+}
+loadEmails();
+
+function saveEmail(e) {
+  const list = JSON.parse(localStorage.getItem(KEY) || "[]");
+  if (!list.includes(e)) list.push(e);
+  localStorage.setItem(KEY, JSON.stringify(list));
 }
 
-/* Links */
+/* Enter */
+function enter() {
+  if (!emailInput.value.trim()) return;
+  saveEmail(emailInput.value.trim());
+  landing.classList.add("hidden");
+  content.classList.remove("hidden");
+}
+
+/* Open links */
 function openLink(url) {
   if (isApp) {
     viewer.src = url;
@@ -182,9 +202,7 @@ function openLink(url) {
 
     setTimeout(() => {
       try {
-        if (viewer.contentWindow.location.href === "about:blank") {
-          blocked.classList.remove("hidden");
-        }
+        viewer.contentWindow.location.href;
       } catch {
         blocked.classList.remove("hidden");
       }
@@ -200,32 +218,27 @@ function copyFormula() {
   alert("Math formula copied");
 }
 
-/* Fullscreen */
-function fullscreen() {
-  viewer.requestFullscreen();
-}
-
 /* Floating symbols */
 ["π","Σ","∞","√","∫"].forEach(() => {
-  const s=document.createElement("div");
-  s.className="symbol";
-  s.textContent=["π","Σ","∞","√","∫"][Math.floor(Math.random()*5)];
-  s.style.left=Math.random()*100+"vw";
-  s.style.animationDuration=15+Math.random()*15+"s";
+  const s = document.createElement("div");
+  s.className = "symbol";
+  s.textContent = ["π","Σ","∞","√","∫"][Math.floor(Math.random()*5)];
+  s.style.left = Math.random()*100 + "vw";
+  s.style.animationDuration = 15 + Math.random()*15 + "s";
   document.body.appendChild(s);
 });
 
 /* Install */
 let deferredPrompt;
-window.addEventListener("beforeinstallprompt",e=>{
+window.addEventListener("beforeinstallprompt", e => {
   e.preventDefault();
-  deferredPrompt=e;
-  installBtn.style.display="block";
+  deferredPrompt = e;
+  installBtn.style.display = "block";
 });
-installBtn.onclick=()=>deferredPrompt.prompt();
+installBtn.onclick = () => deferredPrompt.prompt();
 
-/* SW */
-if("serviceWorker" in navigator){
+/* Service Worker */
+if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
 </script>
