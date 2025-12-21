@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Peak</title>
+<title>Peak Education</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- PWA -->
@@ -18,6 +18,7 @@ body {
   background: linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1e3c72);
   background-size: 800% 800%;
   animation: bg 16s ease infinite;
+  overflow-x: hidden;
 }
 
 @keyframes bg {
@@ -26,24 +27,54 @@ body {
   100% { background-position: 0% 50%; }
 }
 
+/* Floating symbols */
+.symbol {
+  position: fixed;
+  bottom: -40px;
+  font-size: 26px;
+  opacity: 0.25;
+  animation: floatUp linear infinite;
+  pointer-events: none;
+}
+@keyframes floatUp {
+  to { transform: translateY(-120vh); }
+}
+
+/* Glass card */
 .container {
-  max-width: 900px;
-  margin: 30px auto;
-  padding: 22px;
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 28px;
   background: rgba(255,255,255,0.15);
   backdrop-filter: blur(18px);
-  border-radius: 18px;
+  border-radius: 20px;
   box-shadow: 0 25px 60px rgba(0,0,0,0.45);
 }
 
 .hidden { display: none; }
 
-h1, h2, p { text-align: center; }
+h1, h2, h3, p { text-align: center; }
+
+.topics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+  gap: 14px;
+  margin: 30px 0;
+}
+
+.topic {
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.2);
+  font-weight: bold;
+  transition: transform .3s;
+}
+.topic:hover { transform: scale(1.05); }
 
 input, button {
   width: 100%;
   padding: 14px;
-  margin-top: 12px;
+  margin-top: 14px;
   font-size: 16px;
   border-radius: 12px;
   border: none;
@@ -61,29 +92,25 @@ button {
   cursor: pointer;
 }
 
-.controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-iframe {
-  width: 100%;
-  height: 65vh;
-  border: none;
-  border-radius: 14px;
-  margin-top: 15px;
-  background: #000;
-}
-
-.warning {
-  background: rgba(255,0,0,0.2);
-  border: 1px solid rgba(255,0,0,0.4);
-  padding: 12px;
+.quick-links a {
+  display: block;
+  margin-top: 10px;
+  padding: 14px;
+  background: rgba(255,255,255,0.18);
   border-radius: 12px;
-  margin-top: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .3s, background .3s;
+}
+.quick-links a:hover {
+  transform: translateX(4px);
+  background: rgba(255,255,255,0.3);
+}
+
+.note {
+  font-size: 12px;
+  opacity: 0.75;
   text-align: center;
-  font-size: 14px;
 }
 </style>
 </head>
@@ -94,99 +121,98 @@ iframe {
 
 <!-- LANDING -->
 <div id="landing">
-  <h1>Peak</h1>
-  <p>Educational Web Viewer</p>
+  <h1>Peak Education</h1>
+  <p>Interactive learning across math, science, and logic.</p>
 
-  <input id="emailInput" placeholder="Enter your email">
-  <button onclick="enterApp()">Continue</button>
-
-  <p id="msg"></p>
-</div>
-
-<!-- APP -->
-<div id="app" class="hidden">
-  <h2>In-App Browser</h2>
-
-  <input id="urlInput" placeholder="Enter website URL">
-
-  <div class="controls">
-    <button onclick="loadSite()">Open</button>
-    <button onclick="fullscreenIframe()">Fullscreen</button>
+  <div class="topics">
+    <div class="topic">Mathematics</div>
+    <div class="topic">Science</div>
+    <div class="topic">Physics</div>
+    <div class="topic">Chemistry</div>
+    <div class="topic">Biology</div>
+    <div class="topic">Computer Science</div>
+    <div class="topic">Astronomy</div>
+    <div class="topic">Engineering</div>
   </div>
 
-  <!-- INSTALL BUTTON -->
-  <button id="installBtn" style="display:none;margin-top:10px">
+  <input id="emailInput" placeholder="Enter your email">
+  <button onclick="enterSite()">Sign Up</button>
+
+  <p class="note" id="msg"></p>
+</div>
+
+<!-- LINKS -->
+<div id="links" class="hidden">
+  <h2>Educational Resources</h2>
+
+  <button onclick="copyFormula()">Copy Math Formula</button>
+
+  <!-- Install -->
+  <button id="installBtn" style="display:none">
     Install App
   </button>
 
-  <div id="warning" class="warning hidden">
-    ⚠️ This website cannot be shown inside Peak.<br>
-    It likely blocks in-app viewing for security reasons.
+  <div class="quick-links">
+    <h3>Quick Links</h3>
+
+    <a href="https://login.live.com/?scrlcbp=." target="_blank">
+      Microsoft Login
+    </a>
+
+    <a href="https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=."
+       target="_blank">
+      Xbox Cloud Gaming
+    </a>
+
+    <a href="https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=."
+       target="_blank">
+      Interactive Psychology Simulation
+    </a>
   </div>
 
-  <iframe id="webview" allowfullscreen></iframe>
-
-  <p style="font-size:12px;opacity:.75;text-align:center">
-    Some platforms require external access.
+  <p class="note">
+    Some platforms open in a new tab due to security policies.
   </p>
 </div>
 
 </div>
 
 <script>
-/* Enter app */
-function enterApp() {
-  const e = emailInput.value.trim();
-  if (!e) {
+/* Email gate */
+function enterSite() {
+  if (!emailInput.value.trim()) {
     msg.textContent = "Please enter an email.";
     return;
   }
   landing.classList.add("hidden");
-  app.classList.remove("hidden");
+  links.classList.remove("hidden");
 }
 
-/* Load site */
-function loadSite() {
-  let u = urlInput.value.trim();
-  if (!u) return;
-  if (!u.startsWith("http")) u = "https://" + u;
-
-  const url = new URL(u);
-  url.searchParams.set("scrlcbp", ".");
-
-  warning.classList.add("hidden");
-  webview.src = url.toString();
-
-  // Detect blocked iframe
-  setTimeout(() => {
-    try {
-      if (!webview.contentDocument) {
-        warning.classList.remove("hidden");
-      }
-    } catch {
-      warning.classList.remove("hidden");
-    }
-  }, 2000);
+/* Copy helper */
+function copyFormula() {
+  navigator.clipboard.writeText("?scrlcbp=.")
+    .then(() => alert("Math formula copied"));
 }
 
-/* Fullscreen */
-function fullscreenIframe() {
-  if (webview.requestFullscreen) webview.requestFullscreen();
-  else if (webview.webkitRequestFullscreen) webview.webkitRequestFullscreen();
-  else if (webview.msRequestFullscreen) webview.msRequestFullscreen();
+/* Floating symbols */
+const symbols = ["π","Σ","∞","√","∫"];
+for (let i = 0; i < 25; i++) {
+  const s = document.createElement("div");
+  s.className = "symbol";
+  s.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+  s.style.left = Math.random()*100 + "vw";
+  s.style.animationDuration = 15 + Math.random()*15 + "s";
+  document.body.appendChild(s);
 }
 
-/* PWA install button */
+/* PWA install */
 let deferredPrompt;
 window.addEventListener("beforeinstallprompt", e => {
   e.preventDefault();
   deferredPrompt = e;
   installBtn.style.display = "block";
 });
-
-installBtn.onclick = () => {
-  if (deferredPrompt) deferredPrompt.prompt();
-};
+installBtn.onclick = () => deferredPrompt.prompt();
 
 /* Service Worker */
 if ("serviceWorker" in navigator) {
