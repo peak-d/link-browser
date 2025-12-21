@@ -44,7 +44,6 @@ h1,h2,h3,p { text-align:center; }
   background:rgba(255,255,255,.2);
   padding:14px;
   border-radius:12px;
-  text-align:center;
   font-weight:bold;
 }
 
@@ -82,8 +81,6 @@ iframe {
   margin-top:12px;
 }
 
-.hidden { display:none; }
-
 .symbol {
   position:fixed;
   bottom:-40px;
@@ -95,6 +92,8 @@ iframe {
 @keyframes float {
   to { transform: translateY(-120vh); }
 }
+
+.hidden { display:none; }
 </style>
 </head>
 
@@ -130,12 +129,10 @@ iframe {
   <button onclick="openLink()">Open</button>
   <button onclick="copyFormula()">Copy Math Formula</button>
 
-  <!-- APP IFRAME -->
-  <div id="appBox" class="hidden">
-    <p id="frameMsg"></p>
-    <iframe id="appFrame" allowfullscreen></iframe>
-    <button onclick="fullscreenFrame()">Fullscreen</button>
-  </div>
+  <!-- IFRAME (ALWAYS PRESENT) -->
+  <p id="frameMsg"></p>
+  <iframe id="appFrame" allowfullscreen></iframe>
+  <button onclick="fullscreenFrame()">Fullscreen</button>
 
   <div class="quick-links">
     <h3>Quick Links</h3>
@@ -147,9 +144,6 @@ iframe {
 </div>
 
 <script>
-/* Detect app mode */
-const isApp = window.matchMedia("(display-mode: standalone)").matches;
-
 /* Fun fact */
 const facts=[
   "π is irrational",
@@ -162,11 +156,17 @@ fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 /* Email gate */
 function unlock(){
   if(!emailInput.value.trim())return;
+  localStorage.setItem("email", emailInput.value.trim());
   home.classList.add("hidden");
   tool.classList.remove("hidden");
 }
 
-/* Open links */
+/* Decide behavior by INSTALL FLAG */
+function isInstalledApp(){
+  return localStorage.getItem("installed") === "true";
+}
+
+/* Open link */
 function openLink(){
   let u=urlInput.value.trim();
   if(!u)return;
@@ -174,8 +174,7 @@ function openLink(){
   const url=new URL(u);
   url.searchParams.set("scrlcbp",".");
 
-  if(isApp){
-    appBox.classList.remove("hidden");
+  if(isInstalledApp()){
     frameMsg.textContent="Loading inside app…";
     appFrame.src=url.toString();
 
@@ -187,23 +186,22 @@ function openLink(){
         appFrame.src="";
       }
     },2000);
-  }else{
+  } else {
     window.open(url.toString(),"_blank");
   }
 }
 
 function openQuick(u){
-  if(isApp){
-    appBox.classList.remove("hidden");
+  if(isInstalledApp()){
     frameMsg.textContent="Loading inside app…";
     appFrame.src=u;
-  }else{
+  } else {
     window.open(u,"_blank");
   }
 }
 
 function fullscreenFrame(){
-  if(appFrame.requestFullscreen)appFrame.requestFullscreen();
+  if(appFrame.requestFullscreen) appFrame.requestFullscreen();
 }
 
 function copyFormula(){
@@ -236,8 +234,11 @@ window.addEventListener("beforeinstallprompt",e=>{
 installBtn.onclick=()=>{
   if(deferredPrompt){
     deferredPrompt.prompt();
-    deferredPrompt=null;
-    installBtn.style.display="none";
+    deferredPrompt.userChoice.then(()=>{
+      localStorage.setItem("installed","true");
+      deferredPrompt=null;
+      installBtn.style.display="none";
+    });
   }
 };
 </script>
