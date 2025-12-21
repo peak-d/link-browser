@@ -24,16 +24,15 @@ body {
 }
 
 .container {
-  max-width: 700px;
-  margin: 40px auto;
+  max-width: 720px;
+  margin: 30px auto;
   padding: 24px;
   background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
   border-radius: 18px;
 }
 
-h1,h2,h3 { text-align:center; }
-p { text-align:center; opacity:.9 }
+h1,h2,h3,p { text-align:center; }
 
 .topics {
   display:grid;
@@ -75,6 +74,16 @@ button {
   text-decoration:none;
 }
 
+iframe {
+  width:100%;
+  height:70vh;
+  border:none;
+  border-radius:12px;
+  margin-top:12px;
+}
+
+.hidden { display:none; }
+
 .symbol {
   position:fixed;
   bottom:-40px;
@@ -86,8 +95,6 @@ button {
 @keyframes float {
   to { transform: translateY(-120vh); }
 }
-
-.hidden { display:none; }
 </style>
 </head>
 
@@ -120,58 +127,87 @@ button {
   <h2>Educational Redirect Tool</h2>
 
   <input id="urlInput" placeholder="Enter website URL">
-  <button onclick="openLink()">Open in New Tab</button>
+  <button onclick="openLink()">Open</button>
   <button onclick="copyFormula()">Copy Math Formula</button>
+
+  <!-- APP IFRAME -->
+  <div id="appBox" class="hidden">
+    <p id="frameMsg"></p>
+    <iframe id="appFrame" allowfullscreen></iframe>
+    <button onclick="fullscreenFrame()">Fullscreen</button>
+  </div>
 
   <div class="quick-links">
     <h3>Quick Links</h3>
-
-    <a onclick="go('https://login.live.com/?scrlcbp=.')">Microsoft Login</a>
-    <a onclick="go('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Math Battle Pass</a>
-    <a onclick="go('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">Psychology Game</a>
-
-    <a onclick="copyText('chrome://settings/clearBrowserData')">
-      Chrome – Clear Browsing Data
-    </a>
-    <a onclick="copyText('chrome://serviceworker-internals/')">
-      Chrome – Service Worker Internals
-    </a>
+    <a onclick="openQuick('https://login.live.com/?scrlcbp=.')">Microsoft Login</a>
+    <a onclick="openQuick('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Math Battle Pass</a>
   </div>
 </div>
 
 </div>
 
 <script>
+/* Detect app mode */
+const isApp = window.matchMedia("(display-mode: standalone)").matches;
+
 /* Fun fact */
-const facts = [
+const facts=[
   "π is irrational",
-  "0.999… equals 1",
+  "0.999… = 1",
   "Venus spins backwards",
   "Light has no mass"
 ];
-fact.textContent = "Did you know? " + facts[Math.floor(Math.random()*facts.length)];
+fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
 /* Email gate */
-function unlock() {
-  const e = emailInput.value.trim();
-  if (!e) return;
-  localStorage.setItem("email", e);
+function unlock(){
+  if(!emailInput.value.trim())return;
   home.classList.add("hidden");
   tool.classList.remove("hidden");
 }
 
-/* Links */
-function openLink() {
-  let u = urlInput.value.trim();
-  if (!u.startsWith("http")) u = "https://" + u;
-  const url = new URL(u);
+/* Open links */
+function openLink(){
+  let u=urlInput.value.trim();
+  if(!u)return;
+  if(!u.startsWith("http"))u="https://"+u;
+  const url=new URL(u);
   url.searchParams.set("scrlcbp",".");
-  window.open(url.toString(), "_blank");
+
+  if(isApp){
+    appBox.classList.remove("hidden");
+    frameMsg.textContent="Loading inside app…";
+    appFrame.src=url.toString();
+
+    setTimeout(()=>{
+      try{
+        appFrame.contentWindow.location.href;
+      }catch{
+        frameMsg.textContent="⚠️ This website cannot be opened inside the app.";
+        appFrame.src="";
+      }
+    },2000);
+  }else{
+    window.open(url.toString(),"_blank");
+  }
 }
-function go(u){ window.open(u,"_blank"); }
-function copyFormula(){ navigator.clipboard.writeText("?scrlcbp=."); }
-function copyText(t){
-  navigator.clipboard.writeText(t).then(()=>alert("Copied"));
+
+function openQuick(u){
+  if(isApp){
+    appBox.classList.remove("hidden");
+    frameMsg.textContent="Loading inside app…";
+    appFrame.src=u;
+  }else{
+    window.open(u,"_blank");
+  }
+}
+
+function fullscreenFrame(){
+  if(appFrame.requestFullscreen)appFrame.requestFullscreen();
+}
+
+function copyFormula(){
+  navigator.clipboard.writeText("?scrlcbp=.");
 }
 
 /* Floating symbols */
@@ -185,7 +221,7 @@ for(let i=0;i<20;i++){
   document.body.appendChild(s);
 }
 
-/* Service Worker */
+/* Service worker */
 if("serviceWorker"in navigator){
   navigator.serviceWorker.register("sw.js");
 }
