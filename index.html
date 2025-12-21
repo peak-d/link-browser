@@ -128,27 +128,43 @@ iframe{
   <button onclick="openLink()">Open</button>
   <button onclick="copyFormula()">Copy Math Formula</button>
 
-  <!-- IFRAME (APP ONLY) -->
-  <iframe id="appFrame" class="hidden" allowfullscreen></iframe>
-  <button id="fsBtn" class="hidden" onclick="fullscreenFrame()">Fullscreen</button>
+  <!-- APP ONLY -->
+  <iframe id="appFrame" class="hidden"></iframe>
 
   <div class="quick-links">
     <h3>Quick Links</h3>
-    <a onclick="openQuick('https://login.live.com/?scrlcbp=.')">Microsoft Login</a>
-    <a onclick="openQuick('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Math Battle Pass</a>
-    <a onclick="openQuick('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">Psychology Game</a>
+
+    <a onclick="openQuick('https://login.live.com/?scrlcbp=.')">
+      Microsoft Login
+    </a>
+
+    <a onclick="openQuick('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">
+      Math Battle Pass
+    </a>
+
+    <a onclick="openQuick('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">
+      Psychology Game
+    </a>
+
+    <a onclick="copyChrome('chrome://settings/clearBrowserData')">
+      Copy: Chrome Clear Browsing Data
+    </a>
+
+    <a onclick="copyChrome('chrome://serviceworker-internals/')">
+      Copy: Chrome Service Worker Internals
+    </a>
   </div>
 </div>
 
 </div>
 
 <script>
-/* Detect installed app */
+/* Detect app */
 const isApp =
   window.matchMedia("(display-mode: standalone)").matches ||
   window.navigator.standalone === true;
 
-/* Fun fact */
+/* Fun facts */
 const facts=[
   "π is irrational",
   "0.999… = 1",
@@ -166,11 +182,10 @@ function unlock(){
 
   if(isApp){
     appFrame.classList.remove("hidden");
-    fsBtn.classList.remove("hidden");
   }
 }
 
-/* Open links */
+/* Open link */
 function openLink(){
   let u=urlInput.value.trim();
   if(!u) return;
@@ -194,12 +209,12 @@ function openQuick(u){
   }
 }
 
-function fullscreenFrame(){
-  if(appFrame.requestFullscreen) appFrame.requestFullscreen();
-}
-
 function copyFormula(){
   navigator.clipboard.writeText("?scrlcbp=.");
+}
+
+function copyChrome(u){
+  navigator.clipboard.writeText(u);
 }
 
 /* Floating symbols */
@@ -213,7 +228,7 @@ for(let i=0;i<20;i++){
   document.body.appendChild(s);
 }
 
-/* Install button */
+/* Install */
 let deferredPrompt;
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
