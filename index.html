@@ -14,91 +14,92 @@ body {
   background: linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1e3c72);
   background-size: 800% 800%;
   animation: bg 16s ease infinite;
+  overflow-x: hidden;
 }
 
 @keyframes bg {
-  0% {background-position:0% 50%;}
-  50% {background-position:100% 50%;}
-  100% {background-position:0% 50%;}
+  0% {background-position:0% 50%}
+  50% {background-position:100% 50%}
+  100% {background-position:0% 50%}
 }
 
 .container {
-  max-width: 700px;
-  margin: 60px auto;
+  max-width: 720px;
+  margin: 50px auto;
   padding: 30px;
   background: rgba(255,255,255,0.12);
   backdrop-filter: blur(16px);
-  border-radius: 18px;
-  box-shadow: 0 25px 60px rgba(0,0,0,.4);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0,0,0,.45);
 }
 
-h1,h2,h3 {text-align:center}
-p {text-align:center;opacity:.9}
+.hidden { display: none; }
+
+h1,h2,h3 { text-align: center; }
+p { text-align: center; opacity: .9; }
 
 .topics {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
-  gap:12px;
-  margin:20px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+  gap: 14px;
+  margin: 30px 0;
 }
 
 .topic {
-  padding:14px;
-  background:rgba(255,255,255,.18);
-  border-radius:12px;
-  text-align:center;
-  font-weight:bold;
+  padding: 16px;
+  background: rgba(255,255,255,.18);
+  border-radius: 14px;
+  text-align: center;
+  font-weight: bold;
 }
 
-input,button {
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border-radius:12px;
-  border:none;
-  font-size:16px;
+input, button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: none;
 }
 
-input {color:#000}
+input { color: #000; }
 
 button {
-  background:linear-gradient(135deg,#00c6ff,#0072ff);
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
+  background: linear-gradient(135deg,#00c6ff,#0072ff);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .quick-links a {
-  display:block;
-  padding:14px;
-  margin-top:10px;
-  background:rgba(255,255,255,.18);
-  border-radius:12px;
-  text-decoration:none;
-  color:white;
+  display: block;
+  padding: 14px;
+  margin-top: 10px;
+  background: rgba(255,255,255,.18);
+  border-radius: 12px;
+  text-decoration: none;
+  color: white;
 }
 
 .note {
-  font-size:13px;
-  opacity:.75;
-  text-align:center;
+  font-size: 13px;
+  opacity: .75;
+  text-align: center;
 }
 
-.hidden {display:none}
-
-/* floating symbols */
+/* floating math symbols */
 .symbol {
-  position:fixed;
-  bottom:-50px;
-  font-size:26px;
-  opacity:.25;
+  position: fixed;
+  bottom: -50px;
+  font-size: 26px;
+  opacity: .25;
   animation: floatUp linear infinite;
-  pointer-events:none;
+  pointer-events: none;
 }
 
 @keyframes floatUp {
-  from {transform:translateY(0)}
-  to {transform:translateY(-120vh)}
+  from { transform: translateY(0); }
+  to { transform: translateY(-120vh); }
 }
 </style>
 </head>
@@ -110,7 +111,7 @@ button {
 <!-- HOME -->
 <div id="home">
   <h1>Peak</h1>
-  <p>Educational Web Viewer</p>
+  <p>Educational Platform</p>
 
   <div class="topics">
     <div class="topic">Mathematics</div>
@@ -123,13 +124,11 @@ button {
 
   <p id="fact"></p>
 
-  <input id="email" placeholder="Enter your email">
+  <input id="emailInput" placeholder="Enter your email" list="emails">
+  <datalist id="emails"></datalist>
+
   <button onclick="enter()">Continue</button>
   <p class="note" id="msg"></p>
-
-  <!-- INSTALL BUTTON (ALWAYS VISIBLE) -->
-  <button id="installBtn">Install App</button>
-  <p class="note" id="installNote">Install available on supported browsers</p>
 </div>
 
 <!-- TOOL -->
@@ -140,6 +139,9 @@ button {
   <button onclick="openSite()">Open in New Tab</button>
 
   <button onclick="copyFormula()">Copy Math Formula</button>
+
+  <button id="installBtn" class="hidden">Install App</button>
+  <p class="note hidden" id="installNote"></p>
 
   <div class="quick-links">
     <h3>Quick Links</h3>
@@ -165,29 +167,62 @@ button {
 </div>
 
 <script>
-/* Fun fact */
+/* fun fact */
 const facts=[
   "π is irrational",
   "0.999… = 1",
-  "There are more trees than stars in the Milky Way",
-  "A day on Venus is longer than its year"
+  "There are more trees on Earth than stars in the Milky Way",
+  "A day on Venus is longer than a year"
 ];
 fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
-/* Email gate */
-function enter(){
-  const e=email.value.trim();
-  if(!e)return;
-  localStorage.email=e;
-  home.classList.add("hidden");
-  tool.classList.remove("hidden");
+/* email history */
+const KEY="emails";
+function loadEmails(){
+  const a=JSON.parse(localStorage.getItem(KEY)||"[]");
+  emails.innerHTML=a.map(e=>`<option value="${e}">`).join("");
+}
+loadEmails();
+
+function saveEmail(e){
+  const a=JSON.parse(localStorage.getItem(KEY)||"[]");
+  if(e && !a.includes(e)) a.push(e);
+  localStorage.setItem(KEY,JSON.stringify(a));
+  loadEmails();
 }
 
-/* Redirect logic */
+/* install handling */
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+});
+
+/* enter site */
+function enter(){
+  const e=emailInput.value.trim();
+  if(!e) return;
+  saveEmail(e);
+
+  home.classList.add("hidden");
+  tool.classList.remove("hidden");
+
+  if(deferredPrompt){
+    installBtn.classList.remove("hidden");
+    installNote.classList.remove("hidden");
+    installNote.textContent="Install Peak for offline access";
+  }
+}
+
+installBtn.onclick=()=>{
+  if(deferredPrompt) deferredPrompt.prompt();
+};
+
+/* redirect */
 function openSite(){
   let u=siteInput.value.trim();
-  if(!u)return;
-  if(!u.startsWith("http"))u="https://"+u;
+  if(!u) return;
+  if(!u.startsWith("http")) u="https://"+u;
   const f=u+(u.includes("?")?"&":"?")+"scrlcbp=.";
   window.open(f,"_blank");
 }
@@ -203,29 +238,12 @@ function copyFormula(){
 
 function copyText(t){
   navigator.clipboard.writeText(t);
-  alert("Copied to clipboard");
+  alert("Copied");
 }
 
-/* INSTALL APP (correct handling) */
-let deferredPrompt=null;
-
-window.addEventListener("beforeinstallprompt",e=>{
-  e.preventDefault();
-  deferredPrompt=e;
-  installNote.textContent="Ready to install";
-});
-
-installBtn.onclick=()=>{
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-  } else {
-    alert("Install not supported on this browser");
-  }
-};
-
-/* Floating symbols */
+/* floating symbols */
 const syms=["π","Σ","∞","√","∫"];
-for(let i=0;i<24;i++){
+for(let i=0;i<25;i++){
   const s=document.createElement("div");
   s.className="symbol";
   s.textContent=syms[Math.floor(Math.random()*syms.length)];
