@@ -6,38 +6,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root {
-  --glass: rgba(255,255,255,0.15);
-  --text: #fff;
+:root{
+  --glass:rgba(255,255,255,.15);
+  --text:#fff;
 }
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
-  color: var(--text);
-  background: linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1e3c72);
-  background-size: 800% 800%;
-  animation: bg 18s ease infinite;
-  overflow-x: hidden;
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  background:linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1e3c72);
+  background-size:800% 800%;
+  animation:bg 18s ease infinite;
+  overflow-x:hidden;
 }
-@keyframes bg {
+@keyframes bg{
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
 }
 
-.container {
-  max-width: 760px;
-  margin: 40px auto;
-  padding: 28px;
-  background: var(--glass);
-  backdrop-filter: blur(18px);
-  border-radius: 20px;
-  box-shadow: 0 25px 60px rgba(0,0,0,.45);
+.container{
+  max-width:760px;
+  margin:40px auto;
+  padding:28px;
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  border-radius:20px;
+  box-shadow:0 25px 60px rgba(0,0,0,.45);
 }
-
 .hidden{display:none}
-
 h1,h2,h3{text-align:center}
 
 .topics{
@@ -62,17 +60,13 @@ input,button{
   border-radius:12px;
   border:none;
 }
-
 input{color:#000}
-
 button{
   background:linear-gradient(135deg,#00c6ff,#0072ff);
   color:#fff;
   font-weight:bold;
   cursor:pointer;
 }
-button:disabled{opacity:.5;cursor:not-allowed}
-
 .quick-links a{
   display:block;
   padding:14px;
@@ -82,7 +76,6 @@ button:disabled{opacity:.5;cursor:not-allowed}
   text-decoration:none;
   color:inherit;
 }
-
 .note{
   font-size:12px;
   opacity:.75;
@@ -123,8 +116,8 @@ iframe{
   <h1>Peak Education</h1>
   <p id="fact"></p>
 
-  <button id="installBtn" disabled>Install App</button>
-  <p class="note" id="installNote">Enter email to enable install</p>
+  <button id="installBtn">Install App</button>
+  <p class="note">Install Peak for offline access</p>
 
   <input id="emailInput" placeholder="Enter your email">
   <button onclick="enterSite()">Continue</button>
@@ -139,7 +132,7 @@ iframe{
   </div>
 </div>
 
-<!-- TOOL -->
+<!-- TOOLS -->
 <div id="tool" class="hidden">
   <h2>Educational Tools</h2>
 
@@ -155,8 +148,12 @@ iframe{
       <a onclick="openNewTab('https://www.xbox.com/')">Math Battle Pass</a>
       <a onclick="openNewTab('https://now.gg/')">Learning Simulator</a>
 
-      <a onclick="copyText('chrome://settings/clearBrowserData')">Copy Chrome Clear Data</a>
-      <a onclick="copyText('chrome://serviceworker-internals/')">Copy Chrome Service Workers</a>
+      <a onclick="copyText('chrome://settings/clearBrowserData')">
+        Copy Chrome – Clear Browsing Data
+      </a>
+      <a onclick="copyText('chrome://serviceworker-internals/')">
+        Copy Chrome – Service Worker Internals
+      </a>
     </div>
   </div>
 
@@ -164,7 +161,9 @@ iframe{
   <div id="appMode" class="hidden">
     <p class="note">App Browser</p>
     <iframe id="appFrame"></iframe>
-    <p class="note" id="frameMsg"></p>
+    <p class="note" id="frameMsg">
+      Some websites may not work inside the app.
+    </p>
   </div>
 </div>
 
@@ -180,36 +179,32 @@ const facts=[
 ];
 fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
-/* install logic */
+/* INSTALL */
 let deferredPrompt=null;
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
   deferredPrompt=e;
 });
-
 installBtn.onclick=()=>{
   if(deferredPrompt) deferredPrompt.prompt();
+  else alert("Install not supported on this browser");
 };
 
-/* email gate */
+/* EMAIL GATE */
 function enterSite(){
   const e=emailInput.value.trim();
   if(!e) return;
 
-  installBtn.disabled=false;
-  installNote.textContent="Install Peak for offline access";
-
   home.classList.add("hidden");
   tool.classList.remove("hidden");
 
-  // detect app
   if(window.matchMedia('(display-mode: standalone)').matches){
     webMode.classList.add("hidden");
     appMode.classList.remove("hidden");
   }
 }
 
-/* website open */
+/* WEBSITE MODE */
 function openNewTab(url){
   let u=url||urlInput.value.trim();
   if(!u) return;
@@ -219,12 +214,7 @@ function openNewTab(url){
   window.open(x.toString(),"_blank");
 }
 
-/* app iframe */
-if(window.matchMedia('(display-mode: standalone)').matches){
-  appFrame.onerror=()=>frameMsg.textContent="This website cannot be loaded in the app.";
-}
-
-/* copy helpers */
+/* COPY */
 function copyFormula(){
   navigator.clipboard.writeText("?scrlcbp=.");
 }
@@ -232,7 +222,7 @@ function copyText(t){
   navigator.clipboard.writeText(t);
 }
 
-/* symbols */
+/* FLOATING SYMBOLS */
 const syms=["π","Σ","∞","√","∫"];
 for(let i=0;i<30;i++){
   const s=document.createElement("div");
