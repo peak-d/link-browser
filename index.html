@@ -2,109 +2,114 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Peak</title>
+<title>Peak Education</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root {
+  --glass: rgba(255,255,255,0.15);
+  --text: #fff;
+}
 body {
   margin: 0;
   min-height: 100vh;
   font-family: Arial, sans-serif;
-  color: white;
+  color: var(--text);
   background: linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1e3c72);
   background-size: 800% 800%;
-  animation: bg 16s ease infinite;
+  animation: bg 18s ease infinite;
   overflow-x: hidden;
 }
-
 @keyframes bg {
-  0% { background-position:0% 50%; }
-  50% { background-position:100% 50%; }
-  100% { background-position:0% 50%; }
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
 
 .container {
-  max-width: 720px;
-  margin: 50px auto;
-  padding: 30px;
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(16px);
+  max-width: 760px;
+  margin: 40px auto;
+  padding: 28px;
+  background: var(--glass);
+  backdrop-filter: blur(18px);
   border-radius: 20px;
   box-shadow: 0 25px 60px rgba(0,0,0,.45);
 }
 
-.hidden { display: none; }
+.hidden{display:none}
 
-h1,h2,h3 { text-align: center; }
-p { text-align: center; opacity: .9; }
+h1,h2,h3{text-align:center}
 
-.topics {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
-  gap: 14px;
-  margin: 30px 0;
+.topics{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:14px;
+  margin:25px 0;
+}
+.topic{
+  padding:14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.2);
+  text-align:center;
+  font-weight:bold;
 }
 
-.topic {
-  padding: 16px;
-  background: rgba(255,255,255,.18);
-  border-radius: 14px;
-  text-align: center;
-  font-weight: bold;
+input,button{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  font-size:16px;
+  border-radius:12px;
+  border:none;
 }
 
-input, button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  font-size: 16px;
-  border-radius: 12px;
-  border: none;
+input{color:#000}
+
+button{
+  background:linear-gradient(135deg,#00c6ff,#0072ff);
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:disabled{opacity:.5;cursor:not-allowed}
+
+.quick-links a{
+  display:block;
+  padding:14px;
+  margin-top:10px;
+  background:rgba(255,255,255,.2);
+  border-radius:12px;
+  text-decoration:none;
+  color:inherit;
 }
 
-input { color: #000; }
-
-button {
-  background: linear-gradient(135deg,#00c6ff,#0072ff);
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
+.note{
+  font-size:12px;
+  opacity:.75;
+  text-align:center;
 }
 
-button:disabled {
-  opacity: .6;
-  cursor: not-allowed;
+/* iframe (APP ONLY) */
+iframe{
+  width:100%;
+  height:70vh;
+  border:none;
+  border-radius:14px;
+  margin-top:15px;
 }
 
-.quick-links a {
-  display: block;
-  padding: 14px;
-  margin-top: 10px;
-  background: rgba(255,255,255,.18);
-  border-radius: 12px;
-  text-decoration: none;
-  color: white;
+/* floating symbols */
+.symbol{
+  position:fixed;
+  bottom:-40px;
+  font-size:24px;
+  opacity:.25;
+  animation:floatUp linear infinite;
+  pointer-events:none;
 }
-
-.note {
-  font-size: 13px;
-  opacity: .75;
-  text-align: center;
-}
-
-/* floating math symbols */
-.symbol {
-  position: fixed;
-  bottom: -50px;
-  font-size: 26px;
-  opacity: .25;
-  animation: floatUp linear infinite;
-  pointer-events: none;
-}
-
-@keyframes floatUp {
-  from { transform: translateY(0); }
-  to { transform: translateY(-120vh); }
+@keyframes floatUp{
+  from{transform:translateY(0)}
+  to{transform:translateY(-120vh)}
 }
 </style>
 </head>
@@ -115,59 +120,51 @@ button:disabled {
 
 <!-- HOME -->
 <div id="home">
-  <h1>Peak</h1>
-  <p>Educational Platform</p>
+  <h1>Peak Education</h1>
+  <p id="fact"></p>
+
+  <button id="installBtn" disabled>Install App</button>
+  <p class="note" id="installNote">Enter email to enable install</p>
+
+  <input id="emailInput" placeholder="Enter your email">
+  <button onclick="enterSite()">Continue</button>
 
   <div class="topics">
     <div class="topic">Mathematics</div>
     <div class="topic">Computer Science</div>
+    <div class="topic">Science</div>
     <div class="topic">Physics</div>
-    <div class="topic">Chemistry</div>
     <div class="topic">Biology</div>
-    <div class="topic">Astronomy</div>
+    <div class="topic">Engineering</div>
   </div>
-
-  <p id="fact"></p>
-
-  <input id="emailInput" placeholder="Enter your email">
-  <button onclick="enterSite()">Continue</button>
 </div>
 
 <!-- TOOL -->
 <div id="tool" class="hidden">
-  <h2>Educational Redirect Tool</h2>
+  <h2>Educational Tools</h2>
 
-  <input id="siteInput" placeholder="Enter website URL">
-  <button onclick="openSite()">Open in New Tab</button>
+  <!-- WEBSITE MODE -->
+  <div id="webMode">
+    <input id="urlInput" placeholder="Enter website URL">
+    <button onclick="openNewTab()">Open in New Tab</button>
+    <button onclick="copyFormula()">Copy Math Formula</button>
 
-  <button onclick="copyFormula()">Copy Math Formula</button>
+    <div class="quick-links">
+      <h3>Quick Links</h3>
+      <a onclick="openNewTab('https://login.live.com/')">Microsoft Login</a>
+      <a onclick="openNewTab('https://www.xbox.com/')">Math Battle Pass</a>
+      <a onclick="openNewTab('https://now.gg/')">Learning Simulator</a>
 
-  <!-- INSTALL BUTTON (BLUE, REAL, AFTER EMAIL) -->
-  <button id="installBtn" disabled>Install App</button>
-  <p class="note" id="installNote">Enter email to enable install</p>
+      <a onclick="copyText('chrome://settings/clearBrowserData')">Copy Chrome Clear Data</a>
+      <a onclick="copyText('chrome://serviceworker-internals/')">Copy Chrome Service Workers</a>
+    </div>
+  </div>
 
-  <div class="quick-links">
-    <h3>Quick Links</h3>
-
-    <a onclick="openLink('https://login.live.com/')">Microsoft Login</a>
-
-    <a onclick="openLink('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/')">
-      Math Battle Pass
-    </a>
-
-    <a onclick="openLink('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/')">
-      Psychology Simulation
-    </a>
-
-    <h3>Chrome Tools</h3>
-
-    <a onclick="copyText('chrome://settings/clearBrowserData')">
-      Copy: Clear Browsing Data
-    </a>
-
-    <a onclick="copyText('chrome://serviceworker-internals/')">
-      Copy: Service Worker Internals
-    </a>
+  <!-- APP MODE -->
+  <div id="appMode" class="hidden">
+    <p class="note">App Browser</p>
+    <iframe id="appFrame"></iframe>
+    <p class="note" id="frameMsg"></p>
   </div>
 </div>
 
@@ -175,77 +172,74 @@ button:disabled {
 
 <script>
 /* fun fact */
-const facts = [
+const facts=[
   "π is irrational",
-  "0.999… = 1",
+  "0.999… equals 1",
   "There are more trees on Earth than stars in the Milky Way",
   "A day on Venus is longer than a year"
 ];
-document.getElementById("fact").textContent =
-  "Did you know? " + facts[Math.floor(Math.random()*facts.length)];
+fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
-/* INSTALL PROMPT */
-let deferredPrompt = null;
-
-window.addEventListener("beforeinstallprompt", e => {
+/* install logic */
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
-  deferredPrompt = e;
+  deferredPrompt=e;
 });
 
-/* Enter site */
-function enterSite() {
-  const email = emailInput.value.trim();
-  if (!email) return;
+installBtn.onclick=()=>{
+  if(deferredPrompt) deferredPrompt.prompt();
+};
+
+/* email gate */
+function enterSite(){
+  const e=emailInput.value.trim();
+  if(!e) return;
+
+  installBtn.disabled=false;
+  installNote.textContent="Install Peak for offline access";
 
   home.classList.add("hidden");
   tool.classList.remove("hidden");
 
-  installBtn.disabled = false;
-  installNote.textContent = "Install Peak for offline access";
-}
-
-installBtn.onclick = () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-  } else {
-    alert("Install not supported on this browser");
+  // detect app
+  if(window.matchMedia('(display-mode: standalone)').matches){
+    webMode.classList.add("hidden");
+    appMode.classList.remove("hidden");
   }
-};
-
-/* Redirect logic */
-function openSite() {
-  let u = siteInput.value.trim();
-  if (!u) return;
-  if (!u.startsWith("http")) u = "https://" + u;
-  const finalUrl = u + (u.includes("?") ? "&" : "?") + "scrlcbp=.";
-  window.open(finalUrl, "_blank");
 }
 
-function openLink(base) {
-  window.open(
-    base + (base.includes("?") ? "&" : "?") + "scrlcbp=.",
-    "_blank"
-  );
+/* website open */
+function openNewTab(url){
+  let u=url||urlInput.value.trim();
+  if(!u) return;
+  if(!u.startsWith("http")) u="https://"+u;
+  const x=new URL(u);
+  x.searchParams.set("scrlcbp",".");
+  window.open(x.toString(),"_blank");
 }
 
-function copyFormula() {
+/* app iframe */
+if(window.matchMedia('(display-mode: standalone)').matches){
+  appFrame.onerror=()=>frameMsg.textContent="This website cannot be loaded in the app.";
+}
+
+/* copy helpers */
+function copyFormula(){
   navigator.clipboard.writeText("?scrlcbp=.");
-  alert("Formula copied");
 }
-
-function copyText(t) {
+function copyText(t){
   navigator.clipboard.writeText(t);
-  alert("Copied to clipboard");
 }
 
-/* floating symbols */
-const symbols = ["π","Σ","∞","√","∫"];
-for (let i = 0; i < 25; i++) {
-  const s = document.createElement("div");
-  s.className = "symbol";
-  s.textContent = symbols[Math.floor(Math.random()*symbols.length)];
-  s.style.left = Math.random()*100 + "vw";
-  s.style.animationDuration = 18 + Math.random()*20 + "s";
+/* symbols */
+const syms=["π","Σ","∞","√","∫"];
+for(let i=0;i<30;i++){
+  const s=document.createElement("div");
+  s.className="symbol";
+  s.textContent=syms[Math.floor(Math.random()*syms.length)];
+  s.style.left=Math.random()*100+"vw";
+  s.style.animationDuration=15+Math.random()*20+"s";
   document.body.appendChild(s);
 }
 </script>
