@@ -129,8 +129,7 @@ iframe {
   <button onclick="openLink()">Open</button>
   <button onclick="copyFormula()">Copy Math Formula</button>
 
-  <!-- IFRAME (ALWAYS PRESENT) -->
-  <p id="frameMsg"></p>
+  <!-- IFRAME (USED IN APP) -->
   <iframe id="appFrame" allowfullscreen></iframe>
   <button onclick="fullscreenFrame()">Fullscreen</button>
 
@@ -138,6 +137,7 @@ iframe {
     <h3>Quick Links</h3>
     <a onclick="openQuick('https://login.live.com/?scrlcbp=.')">Microsoft Login</a>
     <a onclick="openQuick('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Math Battle Pass</a>
+    <a onclick="openQuick('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">Psychology Game</a>
   </div>
 </div>
 
@@ -155,37 +155,28 @@ fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
 /* Email gate */
 function unlock(){
-  if(!emailInput.value.trim())return;
+  if(!emailInput.value.trim()) return;
   localStorage.setItem("email", emailInput.value.trim());
   home.classList.add("hidden");
   tool.classList.remove("hidden");
 }
 
-/* Decide behavior by INSTALL FLAG */
+/* Installed flag */
 function isInstalledApp(){
-  return localStorage.getItem("installed") === "true";
+  return localStorage.getItem("installed")==="true";
 }
 
-/* Open link */
+/* Open links */
 function openLink(){
   let u=urlInput.value.trim();
-  if(!u)return;
-  if(!u.startsWith("http"))u="https://"+u;
+  if(!u) return;
+
+  if(!u.startsWith("http")) u="https://"+u;
   const url=new URL(u);
   url.searchParams.set("scrlcbp",".");
 
   if(isInstalledApp()){
-    frameMsg.textContent="Loading inside app…";
     appFrame.src=url.toString();
-
-    setTimeout(()=>{
-      try{
-        appFrame.contentWindow.location.href;
-      }catch{
-        frameMsg.textContent="⚠️ This website cannot be opened inside the app.";
-        appFrame.src="";
-      }
-    },2000);
   } else {
     window.open(url.toString(),"_blank");
   }
@@ -193,7 +184,6 @@ function openLink(){
 
 function openQuick(u){
   if(isInstalledApp()){
-    frameMsg.textContent="Loading inside app…";
     appFrame.src=u;
   } else {
     window.open(u,"_blank");
