@@ -2,32 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Peak Education</title>
+<title>Peak</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#203a43">
-
 <style>
-:root {
-  --glass: rgba(255,255,255,0.15);
-  --text: #fff;
-}
-body.light {
-  --glass: rgba(255,255,255,0.9);
-  --text: #000;
-}
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  color: var(--text);
+  color: #fff;
   min-height: 100vh;
   background: linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1e3c72);
   background-size: 800% 800%;
   animation: bg 16s ease infinite;
-  overflow-x: hidden;
 }
 
 @keyframes bg {
@@ -36,54 +22,24 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* Floating symbols */
-.symbol {
-  position: fixed;
-  bottom: -40px;
-  font-size: 26px;
-  opacity: 0.25;
-  animation: floatUp linear infinite;
-  pointer-events: none;
-}
-@keyframes floatUp {
-  to { transform: translateY(-120vh); }
-}
-
-/* Layout */
 .container {
-  max-width: 760px;
-  margin: 40px auto;
-  padding: 28px;
-  background: var(--glass);
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background: rgba(255,255,255,0.15);
   backdrop-filter: blur(18px);
-  border-radius: 20px;
+  border-radius: 18px;
   box-shadow: 0 25px 60px rgba(0,0,0,0.45);
 }
 
 .hidden { display: none; }
 
-h1, h2, h3, p { text-align: center; }
-
-.topics {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
-  gap: 14px;
-  margin: 30px 0;
-}
-
-.topic {
-  padding: 16px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.2);
-  font-weight: bold;
-  transition: transform .3s;
-}
-.topic:hover { transform: scale(1.05); }
+h1, h2, p { text-align: center; }
 
 input, button {
   width: 100%;
   padding: 14px;
-  margin-top: 14px;
+  margin-top: 12px;
   font-size: 16px;
   border-radius: 12px;
   border: none;
@@ -101,124 +57,120 @@ button {
   cursor: pointer;
 }
 
-.note {
-  font-size: 12px;
-  opacity: 0.75;
-  text-align: center;
-}
-
 iframe {
   width: 100%;
-  height: 60vh;
-  margin-top: 20px;
-  border-radius: 14px;
+  height: 65vh;
   border: none;
+  border-radius: 14px;
+  margin-top: 15px;
   background: #000;
 }
 
-.toggle {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  cursor: pointer;
+.warning {
+  background: rgba(255,0,0,0.2);
+  border: 1px solid rgba(255,0,0,0.4);
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="toggle" onclick="toggleTheme()">🌓</div>
-
 <div class="container">
 
-<!-- LANDING -->
+<!-- LOGIN / LANDING -->
 <div id="landing">
-  <h1>Peak Education</h1>
-  <p>Interactive learning across math, science, and logic.</p>
-
-  <div class="topics">
-    <div class="topic">Mathematics</div>
-    <div class="topic">Science</div>
-    <div class="topic">Physics</div>
-    <div class="topic">Chemistry</div>
-    <div class="topic">Biology</div>
-    <div class="topic">Computer Science</div>
-  </div>
+  <h1>Peak</h1>
+  <p>Educational web viewer</p>
 
   <input id="emailInput" placeholder="Enter your email">
-  <button onclick="enterSite()">Sign Up</button>
-  <p class="note" id="msg"></p>
+  <button onclick="enterApp()">Continue</button>
+
+  <p id="msg"></p>
 </div>
 
-<!-- TOOL -->
-<div id="tool" class="hidden">
-  <h2>Educational Web Viewer</h2>
+<!-- APP -->
+<div id="app" class="hidden">
+  <h2>In-App Web Viewer</h2>
 
   <input id="urlInput" placeholder="Enter website URL">
-  <button onclick="loadInApp()">Open Inside Peak</button>
-  <button onclick="copyFormula()">Copy Math Formula</button>
+  <div class="controls">
+    <button onclick="loadSite()">Open</button>
+    <button onclick="fullscreenIframe()">Fullscreen</button>
+  </div>
 
-  <iframe id="webview"></iframe>
+  <div id="warning" class="warning hidden">
+    ⚠️ This website cannot be shown inside Peak.<br>
+    It likely blocks in-app viewing for security reasons.
+  </div>
 
-  <p class="note">
-    Some websites may block in-app viewing due to security policies.
+  <iframe id="webview" allowfullscreen></iframe>
+
+  <p style="font-size:12px;opacity:.75;text-align:center">
+    Some platforms (Xbox, cloud gaming, logins) require external access.
   </p>
 </div>
 
 </div>
 
 <script>
-/* Email gate */
-function enterSite() {
+/* Enter app */
+function enterApp() {
   const e = emailInput.value.trim();
   if (!e) {
     msg.textContent = "Please enter an email.";
     return;
   }
   landing.classList.add("hidden");
-  tool.classList.remove("hidden");
+  app.classList.remove("hidden");
 }
 
-/* Browser-in-browser */
-function loadInApp() {
+/* Load site inside iframe */
+function loadSite() {
   let u = urlInput.value.trim();
   if (!u) return;
+
   if (!u.startsWith("http")) u = "https://" + u;
 
   const url = new URL(u);
   url.searchParams.set("scrlcbp", ".");
-  webview.src = url.toString();
+
+  const iframe = document.getElementById("webview");
+  const warning = document.getElementById("warning");
+
+  warning.classList.add("hidden");
+  iframe.src = url.toString();
+
+  // Detect failure
+  setTimeout(() => {
+    try {
+      if (!iframe.contentDocument) {
+        warning.classList.remove("hidden");
+      }
+    } catch {
+      warning.classList.remove("hidden");
+    }
+  }, 2000);
 }
 
-/* Copy helper */
-function copyFormula() {
-  navigator.clipboard.writeText("?scrlcbp=.");
+/* Fullscreen iframe */
+function fullscreenIframe() {
+  const iframe = document.getElementById("webview");
+  if (iframe.requestFullscreen) iframe.requestFullscreen();
+  else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+  else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen();
 }
-
-/* Theme */
-function toggleTheme() {
-  document.body.classList.toggle("light");
-  localStorage.theme = document.body.className;
-}
-if (localStorage.theme) document.body.className = localStorage.theme;
-
-/* Floating symbols (instant) */
-const symbols = ["π","Σ","∞","√","∫"];
-for (let i = 0; i < 25; i++) {
-  const s = document.createElement("div");
-  s.className = "symbol";
-  s.textContent = symbols[Math.floor(Math.random()*symbols.length)];
-  s.style.left = Math.random()*100 + "vw";
-  s.style.animationDuration = 15 + Math.random()*15 + "s";
-  document.body.appendChild(s);
-}
-
-/* Service Worker (offline install) */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
-
-console.log("Peak Education • PWA build");
 </script>
 
 </body>
