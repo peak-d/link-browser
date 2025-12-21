@@ -5,6 +5,9 @@
 <title>Peak Education</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+
 <style>
 :root{
   --glass:rgba(255,255,255,.15);
@@ -67,6 +70,7 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
+
 .quick-links a{
   display:block;
   padding:14px;
@@ -76,13 +80,13 @@ button{
   text-decoration:none;
   color:inherit;
 }
+
 .note{
   font-size:12px;
   opacity:.75;
   text-align:center;
 }
 
-/* iframe (APP ONLY) */
 iframe{
   width:100%;
   height:70vh;
@@ -161,16 +165,19 @@ iframe{
   <div id="appMode" class="hidden">
     <p class="note">App Browser</p>
     <iframe id="appFrame"></iframe>
-    <p class="note" id="frameMsg">
-      Some websites may not work inside the app.
-    </p>
+    <p class="note">Some websites may not work inside the app.</p>
   </div>
 </div>
 
 </div>
 
 <script>
-/* fun fact */
+/* Register Service Worker */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+
+/* Fun facts */
 const facts=[
   "π is irrational",
   "0.999… equals 1",
@@ -179,7 +186,7 @@ const facts=[
 ];
 fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
-/* INSTALL */
+/* Install */
 let deferredPrompt=null;
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
@@ -190,11 +197,9 @@ installBtn.onclick=()=>{
   else alert("Install not supported on this browser");
 };
 
-/* EMAIL GATE */
+/* Email gate */
 function enterSite(){
-  const e=emailInput.value.trim();
-  if(!e) return;
-
+  if(!emailInput.value.trim()) return;
   home.classList.add("hidden");
   tool.classList.remove("hidden");
 
@@ -204,7 +209,7 @@ function enterSite(){
   }
 }
 
-/* WEBSITE MODE */
+/* Website mode */
 function openNewTab(url){
   let u=url||urlInput.value.trim();
   if(!u) return;
@@ -214,7 +219,7 @@ function openNewTab(url){
   window.open(x.toString(),"_blank");
 }
 
-/* COPY */
+/* Copy helpers */
 function copyFormula(){
   navigator.clipboard.writeText("?scrlcbp=.");
 }
@@ -222,7 +227,7 @@ function copyText(t){
   navigator.clipboard.writeText(t);
 }
 
-/* FLOATING SYMBOLS */
+/* Floating symbols */
 const syms=["π","Σ","∞","√","∫"];
 for(let i=0;i<30;i++){
   const s=document.createElement("div");
