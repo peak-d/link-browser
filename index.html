@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Peak Education</title>
-
-<link rel="icon" href="logo.png">
-<link rel="manifest" href="manifest.json">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="logo.png">
 
 <style>
 body {
@@ -25,39 +24,40 @@ body {
 }
 
 .container {
-  max-width: 720px;
+  max-width: 700px;
   margin: 40px auto;
-  padding: 30px;
+  padding: 24px;
   background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(14px);
   border-radius: 18px;
-  backdrop-filter: blur(18px);
 }
 
-.hidden { display:none }
-
-h1,h2 { text-align:center }
+h1,h2,h3 { text-align:center; }
+p { text-align:center; opacity:.9 }
 
 .topics {
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
   gap:12px;
-  margin:20px 0;
+  margin:25px 0;
 }
 .topic {
-  background:rgba(255,255,255,0.2);
+  background:rgba(255,255,255,.2);
   padding:14px;
   border-radius:12px;
   text-align:center;
+  font-weight:bold;
 }
 
 input,button {
   width:100%;
   padding:14px;
-  margin-top:12px;
-  border:none;
-  border-radius:10px;
   font-size:16px;
+  border-radius:12px;
+  border:none;
+  margin-top:12px;
 }
+
 button {
   background:#007bff;
   color:white;
@@ -65,26 +65,29 @@ button {
   cursor:pointer;
 }
 
+.quick-links a {
+  display:block;
+  padding:14px;
+  margin-top:10px;
+  background:rgba(255,255,255,.2);
+  border-radius:12px;
+  color:white;
+  text-decoration:none;
+}
+
 .symbol {
   position:fixed;
   bottom:-40px;
-  font-size:26px;
-  opacity:0.3;
+  font-size:24px;
+  opacity:.25;
   animation: float 20s linear infinite;
+  pointer-events:none;
 }
 @keyframes float {
   to { transform: translateY(-120vh); }
 }
 
-iframe {
-  width:100%;
-  height:65vh;
-  border-radius:14px;
-  border:none;
-  margin-top:15px;
-}
-.note { font-size:13px; opacity:.8; text-align:center }
-a { color:white; cursor:pointer }
+.hidden { display:none; }
 </style>
 </head>
 
@@ -98,126 +101,109 @@ a { color:white; cursor:pointer }
   <p id="fact"></p>
 
   <div class="topics">
-    <div class="topic">Math</div>
+    <div class="topic">Mathematics</div>
     <div class="topic">Computer Science</div>
     <div class="topic">Physics</div>
-    <div class="topic">Chemistry</div>
     <div class="topic">Biology</div>
+    <div class="topic">Chemistry</div>
     <div class="topic">Astronomy</div>
   </div>
 
+  <input id="emailInput" placeholder="Enter your email">
+  <button onclick="unlock()">Continue</button>
+
   <button id="installBtn" style="display:none">Install App</button>
-
-  <input id="email" placeholder="Enter your email" list="emails">
-  <datalist id="emails"></datalist>
-
-  <button onclick="enter()">Continue</button>
-  <p class="note" id="msg"></p>
 </div>
 
 <!-- TOOL -->
 <div id="tool" class="hidden">
-  <h2>Educational Link Tool</h2>
+  <h2>Educational Redirect Tool</h2>
 
-  <input id="url" placeholder="Enter website URL">
-  <button onclick="openLink()">Open</button>
+  <input id="urlInput" placeholder="Enter website URL">
+  <button onclick="openLink()">Open in New Tab</button>
   <button onclick="copyFormula()">Copy Math Formula</button>
 
-  <div id="appArea" class="hidden">
-    <iframe id="frame"></iframe>
-    <p class="note" id="frameMsg"></p>
+  <div class="quick-links">
+    <h3>Quick Links</h3>
+
+    <a onclick="go('https://login.live.com/?scrlcbp=.')">Microsoft Login</a>
+    <a onclick="go('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">Math Battle Pass</a>
+    <a onclick="go('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">Psychology Game</a>
+
+    <a onclick="copyText('chrome://settings/clearBrowserData')">
+      Chrome – Clear Browsing Data
+    </a>
+    <a onclick="copyText('chrome://serviceworker-internals/')">
+      Chrome – Service Worker Internals
+    </a>
   </div>
-
-  <h3>Quick Links</h3>
-  <a onclick="openQuick('https://login.live.com/')">Microsoft Login</a><br>
-  <a onclick="openQuick('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/')">
-    Math Battle Pass
-  </a><br><br>
-
-  <a onclick="copyText('chrome://settings/clearBrowserData')">
-    Copy Chrome Clear Data
-  </a><br>
-  <a onclick="copyText('chrome://serviceworker-internals/')">
-    Copy Chrome Service Workers
-  </a>
 </div>
 
 </div>
 
 <script>
 /* Fun fact */
-const facts=[
+const facts = [
   "π is irrational",
-  "0.999… = 1",
-  "There are more trees than stars in the Milky Way"
+  "0.999… equals 1",
+  "Venus spins backwards",
+  "Light has no mass"
 ];
-fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
+fact.textContent = "Did you know? " + facts[Math.floor(Math.random()*facts.length)];
 
-/* Floating symbols */
-["π","∞","Σ","√","∫"].forEach(()=> {
-  const s=document.createElement("div");
-  s.className="symbol";
-  s.textContent=["π","∞","Σ","√","∫"][Math.floor(Math.random()*5)];
-  s.style.left=Math.random()*100+"vw";
-  document.body.appendChild(s);
-});
-
-/* Email save */
-const KEY="emails";
-function loadEmails(){
-  const a=JSON.parse(localStorage.getItem(KEY)||"[]");
-  emails.innerHTML=a.map(e=>`<option value="${e}">`).join("");
-}
-loadEmails();
-
-function enter(){
-  const e=email.value.trim();
-  if(!e) return;
-  const a=JSON.parse(localStorage.getItem(KEY)||"[]");
-  if(!a.includes(e)) localStorage.setItem(KEY,JSON.stringify([...a,e]));
+/* Email gate */
+function unlock() {
+  const e = emailInput.value.trim();
+  if (!e) return;
+  localStorage.setItem("email", e);
   home.classList.add("hidden");
   tool.classList.remove("hidden");
 }
 
-/* Install */
-let deferred;
+/* Links */
+function openLink() {
+  let u = urlInput.value.trim();
+  if (!u.startsWith("http")) u = "https://" + u;
+  const url = new URL(u);
+  url.searchParams.set("scrlcbp",".");
+  window.open(url.toString(), "_blank");
+}
+function go(u){ window.open(u,"_blank"); }
+function copyFormula(){ navigator.clipboard.writeText("?scrlcbp=."); }
+function copyText(t){
+  navigator.clipboard.writeText(t).then(()=>alert("Copied"));
+}
+
+/* Floating symbols */
+const syms=["π","Σ","∞","√","∫"];
+for(let i=0;i<20;i++){
+  const s=document.createElement("div");
+  s.className="symbol";
+  s.textContent=syms[Math.floor(Math.random()*syms.length)];
+  s.style.left=Math.random()*100+"vw";
+  s.style.animationDuration=15+Math.random()*15+"s";
+  document.body.appendChild(s);
+}
+
+/* Service Worker */
+if("serviceWorker"in navigator){
+  navigator.serviceWorker.register("sw.js");
+}
+
+/* Install button */
+let deferredPrompt;
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
-  deferred=e;
+  deferredPrompt=e;
   installBtn.style.display="block";
 });
-installBtn.onclick=()=>deferred.prompt();
-
-/* Detect app */
-const isApp=window.matchMedia("(display-mode: standalone)").matches;
-if(isApp) appArea.classList.remove("hidden");
-
-/* Open links */
-function openLink(){
-  let u=url.value.trim();
-  if(!u) return;
-  if(!u.startsWith("http")) u="https://"+u;
-  u+=(u.includes("?")?"&":"?")+"scrlcbp=.";
-
-  if(isApp){
-    frame.src=u;
-    frame.onerror=()=>frameMsg.textContent="This site cannot be opened in the app.";
-  } else {
-    window.open(u,"_blank");
+installBtn.onclick=()=>{
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt=null;
+    installBtn.style.display="none";
   }
-}
-function openQuick(u){
-  openLink(url.value=u);
-}
-
-/* Copy helpers */
-function copyFormula(){ navigator.clipboard.writeText("?scrlcbp=."); }
-function copyText(t){ navigator.clipboard.writeText(t); }
-
-/* Register SW */
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("service-worker.js");
-}
+};
 </script>
 
 </body>
