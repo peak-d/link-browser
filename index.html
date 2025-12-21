@@ -87,7 +87,7 @@ button {
   text-align: center;
 }
 
-/* floating math symbols */
+/* floating symbols */
 .symbol {
   position: fixed;
   bottom: -50px;
@@ -140,6 +140,7 @@ button {
 
   <button onclick="copyFormula()">Copy Math Formula</button>
 
+  <!-- INSTALL (only appears after email IF supported) -->
   <button id="installBtn" class="hidden">Install App</button>
   <p class="note hidden" id="installNote"></p>
 
@@ -191,31 +192,35 @@ function saveEmail(e){
   loadEmails();
 }
 
-/* install handling */
-let deferredPrompt=null;
-window.addEventListener("beforeinstallprompt",e=>{
+/* INSTALL PROMPT — stored immediately (this is the important part) */
+let deferredPrompt = null;
+window.addEventListener("beforeinstallprompt", e => {
   e.preventDefault();
-  deferredPrompt=e;
+  deferredPrompt = e;
 });
 
 /* enter site */
 function enter(){
   const e=emailInput.value.trim();
   if(!e) return;
+
   saveEmail(e);
 
   home.classList.add("hidden");
   tool.classList.remove("hidden");
 
+  /* show install ONLY after email + only if supported */
   if(deferredPrompt){
     installBtn.classList.remove("hidden");
     installNote.classList.remove("hidden");
-    installNote.textContent="Install Peak for offline access";
+    installNote.textContent = "Install Peak for offline access";
   }
 }
 
-installBtn.onclick=()=>{
-  if(deferredPrompt) deferredPrompt.prompt();
+installBtn.onclick = () => {
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+  }
 };
 
 /* redirect */
