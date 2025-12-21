@@ -5,6 +5,10 @@
 <title>Peak</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#203a43">
+
 <style>
 body {
   margin: 0;
@@ -25,7 +29,7 @@ body {
 .container {
   max-width: 900px;
   margin: 30px auto;
-  padding: 20px;
+  padding: 22px;
   background: rgba(255,255,255,0.15);
   backdrop-filter: blur(18px);
   border-radius: 18px;
@@ -57,6 +61,12 @@ button {
   cursor: pointer;
 }
 
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
 iframe {
   width: 100%;
   height: 65vh;
@@ -75,13 +85,6 @@ iframe {
   text-align: center;
   font-size: 14px;
 }
-
-.controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 10px;
-}
 </style>
 </head>
 
@@ -89,10 +92,10 @@ iframe {
 
 <div class="container">
 
-<!-- LOGIN / LANDING -->
+<!-- LANDING -->
 <div id="landing">
   <h1>Peak</h1>
-  <p>Educational web viewer</p>
+  <p>Educational Web Viewer</p>
 
   <input id="emailInput" placeholder="Enter your email">
   <button onclick="enterApp()">Continue</button>
@@ -102,13 +105,19 @@ iframe {
 
 <!-- APP -->
 <div id="app" class="hidden">
-  <h2>In-App Web Viewer</h2>
+  <h2>In-App Browser</h2>
 
   <input id="urlInput" placeholder="Enter website URL">
+
   <div class="controls">
     <button onclick="loadSite()">Open</button>
     <button onclick="fullscreenIframe()">Fullscreen</button>
   </div>
+
+  <!-- INSTALL BUTTON -->
+  <button id="installBtn" style="display:none;margin-top:10px">
+    Install App
+  </button>
 
   <div id="warning" class="warning hidden">
     ⚠️ This website cannot be shown inside Peak.<br>
@@ -118,7 +127,7 @@ iframe {
   <iframe id="webview" allowfullscreen></iframe>
 
   <p style="font-size:12px;opacity:.75;text-align:center">
-    Some platforms (Xbox, cloud gaming, logins) require external access.
+    Some platforms require external access.
   </p>
 </div>
 
@@ -136,26 +145,22 @@ function enterApp() {
   app.classList.remove("hidden");
 }
 
-/* Load site inside iframe */
+/* Load site */
 function loadSite() {
   let u = urlInput.value.trim();
   if (!u) return;
-
   if (!u.startsWith("http")) u = "https://" + u;
 
   const url = new URL(u);
   url.searchParams.set("scrlcbp", ".");
 
-  const iframe = document.getElementById("webview");
-  const warning = document.getElementById("warning");
-
   warning.classList.add("hidden");
-  iframe.src = url.toString();
+  webview.src = url.toString();
 
-  // Detect failure
+  // Detect blocked iframe
   setTimeout(() => {
     try {
-      if (!iframe.contentDocument) {
+      if (!webview.contentDocument) {
         warning.classList.remove("hidden");
       }
     } catch {
@@ -164,12 +169,28 @@ function loadSite() {
   }, 2000);
 }
 
-/* Fullscreen iframe */
+/* Fullscreen */
 function fullscreenIframe() {
-  const iframe = document.getElementById("webview");
-  if (iframe.requestFullscreen) iframe.requestFullscreen();
-  else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
-  else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen();
+  if (webview.requestFullscreen) webview.requestFullscreen();
+  else if (webview.webkitRequestFullscreen) webview.webkitRequestFullscreen();
+  else if (webview.msRequestFullscreen) webview.msRequestFullscreen();
+}
+
+/* PWA install button */
+let deferredPrompt;
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = "block";
+});
+
+installBtn.onclick = () => {
+  if (deferredPrompt) deferredPrompt.prompt();
+};
+
+/* Service Worker */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
 }
 </script>
 
