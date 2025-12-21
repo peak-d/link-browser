@@ -9,45 +9,45 @@
 <link rel="icon" href="logo.png">
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  color: white;
-  background: linear-gradient(270deg,#0f2027,#203a43,#2c5364);
-  background-size: 600% 600%;
-  animation: bg 15s ease infinite;
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:white;
+  background:linear-gradient(270deg,#0f2027,#203a43,#2c5364);
+  background-size:600% 600%;
+  animation:bg 15s ease infinite;
 }
-@keyframes bg {
+@keyframes bg{
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
 }
 
-.container {
-  max-width: 720px;
-  margin: 30px auto;
-  padding: 24px;
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(16px);
-  border-radius: 18px;
+.container{
+  max-width:720px;
+  margin:30px auto;
+  padding:24px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(16px);
+  border-radius:18px;
 }
 
-h1,h2,h3,p { text-align:center; }
+h1,h2,h3,p{text-align:center}
 
-.topics {
+.topics{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
   gap:12px;
   margin:25px 0;
 }
-.topic {
+.topic{
   background:rgba(255,255,255,.2);
   padding:14px;
   border-radius:12px;
   font-weight:bold;
 }
 
-input,button {
+input,button{
   width:100%;
   padding:14px;
   font-size:16px;
@@ -55,15 +55,14 @@ input,button {
   border:none;
   margin-top:12px;
 }
-
-button {
+button{
   background:#007bff;
   color:white;
   font-weight:bold;
   cursor:pointer;
 }
 
-.quick-links a {
+.quick-links a{
   display:block;
   padding:14px;
   margin-top:10px;
@@ -73,7 +72,7 @@ button {
   text-decoration:none;
 }
 
-iframe {
+iframe{
   width:100%;
   height:70vh;
   border:none;
@@ -81,19 +80,19 @@ iframe {
   margin-top:12px;
 }
 
-.symbol {
+.hidden{display:none}
+
+.symbol{
   position:fixed;
   bottom:-40px;
   font-size:24px;
   opacity:.25;
-  animation: float 20s linear infinite;
+  animation:float 20s linear infinite;
   pointer-events:none;
 }
-@keyframes float {
-  to { transform: translateY(-120vh); }
+@keyframes float{
+  to{transform:translateY(-120vh)}
 }
-
-.hidden { display:none; }
 </style>
 </head>
 
@@ -129,9 +128,9 @@ iframe {
   <button onclick="openLink()">Open</button>
   <button onclick="copyFormula()">Copy Math Formula</button>
 
-  <!-- IFRAME (USED IN APP) -->
-  <iframe id="appFrame" allowfullscreen></iframe>
-  <button onclick="fullscreenFrame()">Fullscreen</button>
+  <!-- IFRAME (APP ONLY) -->
+  <iframe id="appFrame" class="hidden" allowfullscreen></iframe>
+  <button id="fsBtn" class="hidden" onclick="fullscreenFrame()">Fullscreen</button>
 
   <div class="quick-links">
     <h3>Quick Links</h3>
@@ -144,6 +143,11 @@ iframe {
 </div>
 
 <script>
+/* Detect installed app */
+const isApp =
+  window.matchMedia("(display-mode: standalone)").matches ||
+  window.navigator.standalone === true;
+
 /* Fun fact */
 const facts=[
   "π is irrational",
@@ -153,39 +157,39 @@ const facts=[
 ];
 fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
-/* Email gate */
+/* Unlock */
 function unlock(){
   if(!emailInput.value.trim()) return;
-  localStorage.setItem("email", emailInput.value.trim());
+  localStorage.setItem("email",emailInput.value.trim());
   home.classList.add("hidden");
   tool.classList.remove("hidden");
-}
 
-/* Installed flag */
-function isInstalledApp(){
-  return localStorage.getItem("installed")==="true";
+  if(isApp){
+    appFrame.classList.remove("hidden");
+    fsBtn.classList.remove("hidden");
+  }
 }
 
 /* Open links */
 function openLink(){
   let u=urlInput.value.trim();
   if(!u) return;
-
   if(!u.startsWith("http")) u="https://"+u;
+
   const url=new URL(u);
   url.searchParams.set("scrlcbp",".");
 
-  if(isInstalledApp()){
+  if(isApp){
     appFrame.src=url.toString();
-  } else {
+  }else{
     window.open(url.toString(),"_blank");
   }
 }
 
 function openQuick(u){
-  if(isInstalledApp()){
+  if(isApp){
     appFrame.src=u;
-  } else {
+  }else{
     window.open(u,"_blank");
   }
 }
@@ -209,11 +213,6 @@ for(let i=0;i<20;i++){
   document.body.appendChild(s);
 }
 
-/* Service worker */
-if("serviceWorker"in navigator){
-  navigator.serviceWorker.register("sw.js");
-}
-
 /* Install button */
 let deferredPrompt;
 window.addEventListener("beforeinstallprompt",e=>{
@@ -222,14 +221,7 @@ window.addEventListener("beforeinstallprompt",e=>{
   installBtn.style.display="block";
 });
 installBtn.onclick=()=>{
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(()=>{
-      localStorage.setItem("installed","true");
-      deferredPrompt=null;
-      installBtn.style.display="none";
-    });
-  }
+  deferredPrompt.prompt();
 };
 </script>
 
