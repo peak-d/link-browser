@@ -173,13 +173,12 @@ const facts=[
 ];
 fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
-/* 🔐 LOCKED ACCESS */
+/* 🔐 SILENT LOCK */
 function unlock(){
   const email = emailInput.value.trim();
 
   if(email !== "peak.com@adMIN"){
-    alert("Invalid access email.");
-    return;
+    return; // nothing happens
   }
 
   localStorage.setItem("email", email);
