@@ -6,119 +6,137 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="logo.png">
 
 <style>
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  color:white;
-  background:linear-gradient(270deg,#0f2027,#203a43,#2c5364);
-  background-size:600% 600%;
-  animation:bg 15s ease infinite;
+:root {
+  --glass: rgba(255,255,255,0.12);
+  --text: #fff;
 }
-@keyframes bg{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+body.light {
+  --glass: rgba(255,255,255,0.85);
+  --text: #000;
 }
 
-.container{
-  max-width:720px;
-  margin:30px auto;
-  padding:24px;
-  background:rgba(255,255,255,.12);
-  backdrop-filter:blur(16px);
-  border-radius:18px;
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: var(--text);
+  background: linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1e3c72);
+  background-size: 800% 800%;
+  animation: bg 16s ease infinite;
+  overflow-x: hidden;
 }
 
-h1,h2,h3,p{text-align:center}
-
-.notice{
-  font-size:14px;
-  opacity:.85;
-  margin-bottom:16px;
+@keyframes bg {
+  0% {background-position:0% 50%}
+  50% {background-position:100% 50%}
+  100% {background-position:0% 50%}
 }
 
-.topics{
+.symbol {
+  position: fixed;
+  bottom: -50px;
+  font-size: 26px;
+  opacity: 0.25;
+  animation: floatUp linear infinite;
+  pointer-events: none;
+}
+
+@keyframes floatUp {
+  from {transform: translateY(0)}
+  to {transform: translateY(-120vh)}
+}
+
+.container {
+  max-width: 760px;
+  margin: 40px auto;
+  padding: 28px;
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+}
+
+.hidden { display:none }
+
+h1,h2,h3 { text-align:center }
+p { text-align:center; opacity:.9 }
+
+.topics {
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
-  gap:12px;
-  margin:25px 0;
-}
-.topic{
-  background:rgba(255,255,255,.2);
-  padding:14px;
-  border-radius:12px;
-  font-weight:bold;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:14px;
+  margin:30px 0;
 }
 
-input,button{
+.topic {
+  padding:16px;
+  border-radius:14px;
+  background:rgba(255,255,255,.18);
+  font-weight:bold;
+  text-align:center;
+}
+
+input,button {
   width:100%;
   padding:14px;
-  font-size:16px;
+  margin-top:14px;
   border-radius:12px;
   border:none;
-  margin-top:12px;
+  font-size:16px;
 }
-button{
-  background:#007bff;
-  color:white;
+
+input {
+  background:rgba(255,255,255,.95);
+}
+
+button {
+  background:linear-gradient(135deg,#00c6ff,#0072ff);
+  color:#fff;
   font-weight:bold;
   cursor:pointer;
 }
 
-.quick-links a{
+.quick-links a {
   display:block;
-  padding:14px;
   margin-top:10px;
-  background:rgba(255,255,255,.2);
+  padding:14px;
+  background:rgba(255,255,255,.18);
   border-radius:12px;
-  color:white;
   text-decoration:none;
+  color:inherit;
 }
 
-iframe{
+iframe {
   width:100%;
   height:70vh;
   border:none;
   border-radius:12px;
-  margin-top:12px;
+  margin-top:16px;
 }
 
-.hidden{display:none}
-
-.symbol{
+.toggle {
   position:fixed;
-  bottom:-40px;
-  font-size:24px;
-  opacity:.25;
-  animation:float 20s linear infinite;
-  pointer-events:none;
-}
-@keyframes float{
-  to{transform:translateY(-120vh)}
+  top:16px;
+  right:16px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
+<div class="toggle" onclick="toggleTheme()">🌓</div>
+
 <div class="container">
 
 <!-- HOME -->
-<div id="home">
+<div id="landing">
   <h1>Peak Education</h1>
-
-  <!-- TOP MESSAGE -->
-  <p class="notice">
-    You can use
-    <br>
-    <strong>
-      https://frosty-term-5427.andhisnameisjohncenadunadunana.workers.dev/
-    </strong>
-    <br>
-    to learn math.
+  <p>You can use  
+    <b>frosty-term-5427.andhisnameisjohncenadunadunana.workers.dev</b>  
+    to learn math
   </p>
 
   <p id="fact"></p>
@@ -127,105 +145,96 @@ iframe{
     <div class="topic">Mathematics</div>
     <div class="topic">Computer Science</div>
     <div class="topic">Physics</div>
-    <div class="topic">Biology</div>
     <div class="topic">Chemistry</div>
+    <div class="topic">Biology</div>
     <div class="topic">Astronomy</div>
+    <div class="topic">Engineering</div>
   </div>
 
-  <!-- TEXT CHANGED -->
-  <input id="emailInput" placeholder="Sign up now">
-  <button onclick="unlock()">Continue</button>
-
   <button id="installBtn" style="display:none">Install App</button>
+
+  <input id="emailInput" placeholder="Sign up now">
+  <button onclick="checkEmail()">Continue</button>
+</div>
+
+<!-- PASSWORD -->
+<div id="passwordScreen" class="hidden">
+  <h2>Enter Password</h2>
+  <input id="passwordInput" type="password" placeholder="Password">
+  <button onclick="checkPassword()">Continue</button>
 </div>
 
 <!-- TOOL -->
 <div id="tool" class="hidden">
   <h2>Educational Redirect Tool</h2>
 
-  <input id="urlInput" placeholder="Enter website URL">
-  <button onclick="openLink()">Open</button>
+  <input id="urlInput" placeholder="Enter website">
+  <button onclick="go()">Open</button>
   <button onclick="copyFormula()">Copy Math Formula</button>
-
-  <!-- APP ONLY -->
-  <iframe id="appFrame" class="hidden"></iframe>
 
   <div class="quick-links">
     <h3>Quick Links</h3>
-
-    <a onclick="openQuick('https://login.live.com/?scrlcbp=.')">
-      Microsoft Login
-    </a>
-
-    <a onclick="openQuick('https://www.xbox.com/en-US/play/launch/fortnite/BT5P2X999VH2/?scrlcbp=.')">
-      Math Battle Pass
-    </a>
-
-    <a onclick="openQuick('https://now.gg/apps/Steal-a-Brainrot/19904/Steal-a-Brainrot.html/?scrlcbp=.')">
-      Psychology Game
-    </a>
+    <a onclick="openLink('https://login.live.com/')">Microsoft Login</a>
+    <a onclick="openLink('https://www.xbox.com/')">Math Battle Pass</a>
+    <a onclick="openLink('https://now.gg/')">Psychology Study</a>
 
     <a onclick="copyChrome('chrome://settings/clearBrowserData')">
-      Copy: Chrome Clear Browsing Data
+      Chrome – Clear Browsing Data
     </a>
 
     <a onclick="copyChrome('chrome://serviceworker-internals/')">
-      Copy: Chrome Service Worker Internals
+      Chrome – Service Workers
     </a>
   </div>
+
+  <iframe id="appFrame" class="hidden"></iframe>
 </div>
 
 </div>
 
 <script>
-/* Detect app */
-const isApp =
-  window.matchMedia("(display-mode: standalone)").matches ||
-  window.navigator.standalone === true;
+const CORRECT_EMAIL = "peak.com@adMIN";
+const CORRECT_PASSWORD = "hehe?";
+const isApp = window.matchMedia('(display-mode: standalone)').matches;
 
-/* Fun facts */
 const facts=[
-  "π is irrational",
-  "0.999… = 1",
-  "Venus spins backwards",
-  "Light has no mass"
+"π is irrational",
+"0.999… = 1",
+"A day on Venus is longer than a year",
+"There are more trees on Earth than stars"
 ];
 fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
-/* Silent lock */
-function unlock(){
-  const email = emailInput.value.trim();
-  if(email !== "peak.com@adMIN") return;
-
-  localStorage.setItem("email", email);
-  home.classList.add("hidden");
-  tool.classList.remove("hidden");
-
-  if(isApp){
-    appFrame.classList.remove("hidden");
-  }
+function checkEmail(){
+  if(emailInput.value!==CORRECT_EMAIL) return;
+  landing.classList.add("hidden");
+  passwordScreen.classList.remove("hidden");
 }
 
-/* Open links */
-function openLink(){
+function checkPassword(){
+  if(passwordInput.value!==CORRECT_PASSWORD) return;
+  passwordScreen.classList.add("hidden");
+  tool.classList.remove("hidden");
+}
+
+function go(){
   let u=urlInput.value.trim();
   if(!u) return;
   if(!u.startsWith("http")) u="https://"+u;
-
   const url=new URL(u);
   url.searchParams.set("scrlcbp",".");
-
-  if(isApp){
-    appFrame.src=url.toString();
-  }else{
-    window.open(url.toString(),"_blank");
-  }
+  openFinal(url.toString());
 }
 
-function openQuick(u){
+function openLink(u){
+  openFinal(u+"?scrlcbp=.");
+}
+
+function openFinal(u){
   if(isApp){
     appFrame.src=u;
-  }else{
+    appFrame.classList.remove("hidden");
+  } else {
     window.open(u,"_blank");
   }
 }
@@ -238,15 +247,8 @@ function copyChrome(u){
   navigator.clipboard.writeText(u);
 }
 
-/* Floating symbols */
-const syms=["π","Σ","∞","√","∫"];
-for(let i=0;i<20;i++){
-  const s=document.createElement("div");
-  s.className="symbol";
-  s.textContent=syms[Math.floor(Math.random()*syms.length)];
-  s.style.left=Math.random()*100+"vw";
-  s.style.animationDuration=15+Math.random()*15+"s";
-  document.body.appendChild(s);
+function toggleTheme(){
+  document.body.classList.toggle("light");
 }
 
 /* Install */
@@ -256,9 +258,18 @@ window.addEventListener("beforeinstallprompt",e=>{
   deferredPrompt=e;
   installBtn.style.display="block";
 });
-installBtn.onclick=()=>{
-  deferredPrompt.prompt();
-};
+installBtn.onclick=()=>deferredPrompt.prompt();
+
+/* Floating symbols */
+const symbols=["π","Σ","∞","√","∫"];
+for(let i=0;i<25;i++){
+  const s=document.createElement("div");
+  s.className="symbol";
+  s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+  s.style.left=Math.random()*100+"vw";
+  s.style.animationDuration=18+Math.random()*18+"s";
+  document.body.appendChild(s);
+}
 </script>
 
 </body>
