@@ -12,10 +12,6 @@
   --glass: rgba(255,255,255,0.12);
   --text: #fff;
 }
-body.light {
-  --glass: rgba(255,255,255,0.85);
-  --text: #000;
-}
 
 body {
   margin: 0;
@@ -55,13 +51,11 @@ body {
   background: var(--glass);
   backdrop-filter: blur(18px);
   border-radius: 20px;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.45);
 }
 
 .hidden { display:none }
 
 h1,h2,h3 { text-align:center }
-p { text-align:center; opacity:.9 }
 
 .topics {
   display:grid;
@@ -87,10 +81,6 @@ input,button {
   font-size:16px;
 }
 
-input {
-  background:rgba(255,255,255,.95);
-}
-
 button {
   background:linear-gradient(135deg,#00c6ff,#0072ff);
   color:#fff;
@@ -108,7 +98,8 @@ button {
   color:inherit;
 }
 
-iframe {
+/* APP ONLY */
+#appFrame {
   width:100%;
   height:70vh;
   border:none;
@@ -116,38 +107,26 @@ iframe {
   margin-top:16px;
 }
 
-.toggle {
-  position:fixed;
-  top:16px;
-  right:16px;
-  cursor:pointer;
+#fullscreenBtn {
+  background:#111;
 }
 </style>
 </head>
 
 <body>
 
-<div class="toggle" onclick="toggleTheme()">🌓</div>
-
 <div class="container">
 
 <!-- HOME -->
 <div id="landing">
   <h1>Peak Education</h1>
-  <p>You can use  
-    <b>frosty-term-5427.andhisnameisjohncenadunadunana.workers.dev</b>  
-    to learn math
-  </p>
-
   <p id="fact"></p>
 
   <div class="topics">
     <div class="topic">Mathematics</div>
     <div class="topic">Computer Science</div>
     <div class="topic">Physics</div>
-    <div class="topic">Chemistry</div>
     <div class="topic">Biology</div>
-    <div class="topic">Astronomy</div>
     <div class="topic">Engineering</div>
   </div>
 
@@ -159,9 +138,9 @@ iframe {
 
 <!-- PASSWORD -->
 <div id="passwordScreen" class="hidden">
-  <h2>Enter Password</h2>
-  <input id="passwordInput" type="password" placeholder="Password">
-  <button onclick="checkPassword()">Continue</button>
+  <h2>Password</h2>
+  <input id="passwordInput" type="password">
+  <button onclick="checkPassword()">Enter</button>
 </div>
 
 <!-- TOOL -->
@@ -173,10 +152,9 @@ iframe {
   <button onclick="copyFormula()">Copy Math Formula</button>
 
   <div class="quick-links">
-    <h3>Quick Links</h3>
-    <a onclick="openLink('https://login.live.com/')">Microsoft Login</a>
-    <a onclick="openLink('https://www.xbox.com/')">Math Battle Pass</a>
-    <a onclick="openLink('https://now.gg/')">Psychology Study</a>
+    <a onclick="openLink('https://login.live.com')">Microsoft Login</a>
+    <a onclick="openLink('https://www.xbox.com')">Math Battle Pass</a>
+    <a onclick="openLink('https://now.gg')">Psychology Study</a>
 
     <a onclick="copyChrome('chrome://settings/clearBrowserData')">
       Chrome – Clear Browsing Data
@@ -187,32 +165,33 @@ iframe {
     </a>
   </div>
 
+  <!-- APP ONLY -->
   <iframe id="appFrame" class="hidden"></iframe>
+  <button id="fullscreenBtn" class="hidden" onclick="goFullscreen()">Fullscreen</button>
 </div>
 
 </div>
 
 <script>
-const CORRECT_EMAIL = "peak.com@adMIN";
-const CORRECT_PASSWORD = "hehe?";
+const EMAIL="peak.com@adMIN";
+const PASS="hehe?";
 const isApp = window.matchMedia('(display-mode: standalone)').matches;
 
 const facts=[
 "π is irrational",
 "0.999… = 1",
-"A day on Venus is longer than a year",
-"There are more trees on Earth than stars"
+"A day on Venus is longer than a year"
 ];
 fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
 function checkEmail(){
-  if(emailInput.value!==CORRECT_EMAIL) return;
+  if(emailInput.value!==EMAIL) return;
   landing.classList.add("hidden");
   passwordScreen.classList.remove("hidden");
 }
 
 function checkPassword(){
-  if(passwordInput.value!==CORRECT_PASSWORD) return;
+  if(passwordInput.value!==PASS) return;
   passwordScreen.classList.add("hidden");
   tool.classList.remove("hidden");
 }
@@ -221,9 +200,8 @@ function go(){
   let u=urlInput.value.trim();
   if(!u) return;
   if(!u.startsWith("http")) u="https://"+u;
-  const url=new URL(u);
-  url.searchParams.set("scrlcbp",".");
-  openFinal(url.toString());
+  u+="?scrlcbp=.";
+  openFinal(u);
 }
 
 function openLink(u){
@@ -234,9 +212,14 @@ function openFinal(u){
   if(isApp){
     appFrame.src=u;
     appFrame.classList.remove("hidden");
+    fullscreenBtn.classList.remove("hidden");
   } else {
     window.open(u,"_blank");
   }
+}
+
+function goFullscreen(){
+  if(appFrame.requestFullscreen) appFrame.requestFullscreen();
 }
 
 function copyFormula(){
@@ -245,10 +228,6 @@ function copyFormula(){
 
 function copyChrome(u){
   navigator.clipboard.writeText(u);
-}
-
-function toggleTheme(){
-  document.body.classList.toggle("light");
 }
 
 /* Install */
@@ -261,15 +240,14 @@ window.addEventListener("beforeinstallprompt",e=>{
 installBtn.onclick=()=>deferredPrompt.prompt();
 
 /* Floating symbols */
-const symbols=["π","Σ","∞","√","∫"];
-for(let i=0;i<25;i++){
-  const s=document.createElement("div");
-  s.className="symbol";
-  s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
-  s.style.left=Math.random()*100+"vw";
-  s.style.animationDuration=18+Math.random()*18+"s";
-  document.body.appendChild(s);
-}
+["π","Σ","∞","√","∫"].forEach((s,i)=>{
+  const d=document.createElement("div");
+  d.className="symbol";
+  d.textContent=s;
+  d.style.left=Math.random()*100+"vw";
+  d.style.animationDuration=20+Math.random()*20+"s";
+  document.body.appendChild(d);
+});
 </script>
 
 </body>
