@@ -114,7 +114,7 @@ iframe{
     <div class="topic">Astronomy</div>
   </div>
 
-  <input id="emailInput" placeholder="Enter your email">
+  <input id="emailInput" placeholder="Enter access email">
   <button onclick="unlock()">Continue</button>
 
   <button id="installBtn" style="display:none">Install App</button>
@@ -173,10 +173,16 @@ const facts=[
 ];
 fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
-/* Unlock */
+/* 🔐 LOCKED ACCESS */
 function unlock(){
-  if(!emailInput.value.trim()) return;
-  localStorage.setItem("email",emailInput.value.trim());
+  const email = emailInput.value.trim();
+
+  if(email !== "peak.com@adMIN"){
+    alert("Invalid access email.");
+    return;
+  }
+
+  localStorage.setItem("email", email);
   home.classList.add("hidden");
   tool.classList.remove("hidden");
 
