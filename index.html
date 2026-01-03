@@ -34,6 +34,12 @@ body{
 
 h1,h2,h3,p{text-align:center}
 
+.notice{
+  font-size:14px;
+  opacity:.85;
+  margin-bottom:16px;
+}
+
 .topics{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
@@ -103,6 +109,18 @@ iframe{
 <!-- HOME -->
 <div id="home">
   <h1>Peak Education</h1>
+
+  <!-- TOP MESSAGE -->
+  <p class="notice">
+    You can use
+    <br>
+    <strong>
+      https://frosty-term-5427.andhisnameisjohncenadunadunana.workers.dev/
+    </strong>
+    <br>
+    to learn math.
+  </p>
+
   <p id="fact"></p>
 
   <div class="topics">
@@ -114,7 +132,8 @@ iframe{
     <div class="topic">Astronomy</div>
   </div>
 
-  <input id="emailInput" placeholder="Sign Up Now or go to https://frosty-term-5427.andhisnameisjohncenadunadunana.workers.dev to learn lots of math">
+  <!-- TEXT CHANGED -->
+  <input id="emailInput" placeholder="Sign up now">
   <button onclick="unlock()">Continue</button>
 
   <button id="installBtn" style="display:none">Install App</button>
@@ -173,13 +192,10 @@ const facts=[
 ];
 fact.textContent="Did you know? "+facts[Math.floor(Math.random()*facts.length)];
 
-/* 🔐 SILENT LOCK */
+/* Silent lock */
 function unlock(){
   const email = emailInput.value.trim();
-
-  if(email !== "peak.com@adMIN"){
-    return; // nothing happens
-  }
+  if(email !== "peak.com@adMIN") return;
 
   localStorage.setItem("email", email);
   home.classList.add("hidden");
@@ -190,7 +206,7 @@ function unlock(){
   }
 }
 
-/* Open link */
+/* Open links */
 function openLink(){
   let u=urlInput.value.trim();
   if(!u) return;
